@@ -120,7 +120,13 @@ class InventorySalesController extends Controller
         $units=ItemUnits::where('voided','=',0)->get();
         $quotations=InventorySaleQuoteLine::get();
         $quoteStatuses=InventorySaleStatus::get();
-        $quotationLines=InventorySaleQuoteLine::get();
+        // $quotationLines=InventorySaleQuoteLine::get();
+        $quotationLines=DB::table('inventory_sale_quote_lines as isql')
+        ->join('inventory_items as ii','ii.inv_item_id','isql.item')
+        ->join('item_units as iu','iu.unit_id','iri.units')
+        ->join('inventory_sale_statuses as iss','iss.status_id','isql.status')
+        ->select('isql.*','ii.name as itemName','iu.name as uOM','iss.name as lineStatus')
+        ->get();
         return view('inventory.quotation',compact(
             'createInsuranceSales','title','items','units','users','quotations','quotationLines','quoteStatuses'
         ));
@@ -306,6 +312,9 @@ class InventorySalesController extends Controller
             $saleOrder=InventorySaleOrderByQuote::where('uuid',$uuidSaleOrder)->get()->first();
             foreach ($quoteLines as $k => $v){
                 $quoteLine=InventorySaleQuoteLine::where('quote',$quote)->where('quote_line_id',$quoteLines[$k])->get()->first();
+                InventorySaleQuoteLine::where('quote',$quote)->where('quote_line_id',$quoteLines[$k])->update([
+                    'status'=>6
+                ]);
                 InventorySaleOrderByQuoteLine::create([
                     'sale_order_quote'=>$saleOrder->soq_no,
                     'quote_line'=>$quoteLine->quote_line_id,
@@ -314,6 +323,12 @@ class InventorySalesController extends Controller
                     'uuid'=>(string)Str::uuid()
                 ]);
             }
+            $totalLines=InventorySaleQuoteLine::where('quote',$quote)->get()->count('quote_line_id');
+            $confirmedLines=InventorySaleQuoteLine::where('quote',$quote)->where('status',6)->get()->count('quote_line_id');
+            $status = ($totalLines == $confirmedLines) ? 3 : 2 ;
+                InventorySaleQuote::where('quote_id',$quote_id)->update([
+                    'status'=>$status
+                ]);            
             $notification=array(
                 'message'=>"Saved Successfully with Date id ".$dated_sale_id,
                 'alert-type'=>'danger',
@@ -389,7 +404,7 @@ class InventorySalesController extends Controller
                 InventorySaleQuote::create([
                     'total_quote'=>$totalSalesAmount,
                     'payable_amount'=>$totalSalesAmount,
-                    'status' =>1,
+                    'status' =>3,
                     'created_by'=>Auth::user()->id,
                     'uuid' =>$uuidQuote
                 ]);
@@ -424,7 +439,7 @@ class InventorySalesController extends Controller
                         'quantity'=>$qty[$k],
                         'quoted_amount'=>$amount[$k],
                         'payable_amount'=>$amount[$k],
-                        'status'=>5,
+                        'status'=>6,
                         'uuid'=>$uuid
                     ]);
                     $line=InventorySaleQuoteLine::where('uuid',$uuid)->get()->first();

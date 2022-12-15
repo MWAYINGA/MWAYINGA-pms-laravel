@@ -70,57 +70,63 @@
 								<tr>
 									<td colspan="9" class="hiddenRow">
 										<div class="accordian-body collapse" id="demo{{$quotation->quote_id}}">
-											<table class="table table-striped" id="list">
-												<thead>
-													<tr>
-														<th>SN.</th>
-														<th>Item Name</th>
-														<th>Quantity</th>
-														<th>Units</th>
-														<th>Price @ unit</th>
-														<th>Quoted Amount</th>
-														<th>Payable Amount</th>
-														<th>Status</th>
-														<th></th>
-													</tr>
-												</thead>
-												<tbody>
-													@foreach ($quotationLines as $line)
-														@if ($line->quote == $quotation->quote_id)
-														@php
-															$index=1;
-														@endphp
-															<tr>
-																<td>{{$index}}</td>
-																<td>{{$line->uOM}}</td>
-																<td>{{$line->batchNo}}</td>
-																<td>{{$line->quantity}}</td>
-																<td>{{$line->expireDate}}</td>
-																<td>{{$line->unit_price}}</td>
-																<td>{{$line->unit_price * $item->quantity}}</td>
-															</tr>
-															@php
-																$index++;
-															@endphp
-														@endif
-													@endforeach
-												</tbody>
-												<tfoot>
-													@if ($quotation->status ==0)
+											<form action="{{route('pos-quotations')}}" enctype="multipart/form-data" id="update_invoice{{$quotation->quote_id}}" method="post">
+												@csrf
+												<table class="table table-striped" id="list">
+													<thead>
 														<tr>
-															<td colspan="7">
-																<form action="{{route('invoice-approval')}}" enctype="multipart/form-data" id="update_invoice{{$invoice->invoice_id}}" method="post">
-																	@csrf
-																	<input type="hidden" name="invoiceId" value="{{$invoice->invoice_id}}">
-																	<div class="submit-section">
-																		<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="ApproveInvoice">Approve Invoice</button>
-																	</div>
-																</form>
-															</td>
+															<th>SN.</th>
+															<th>Item Name</th>
+															<th>Quantity</th>
+															<th>Units</th>
+															<th>Price @ unit</th>
+															<th>Quoted Amount</th>
+															<th>Payable Amount</th>
+															<th>Status</th>
+															<th></th>
 														</tr>
-													@endif
-												</tfoot>
-											</table>
+													</thead>
+													<tbody>
+														@foreach ($quotationLines as $line)
+															@if ($line->quote == $quotation->quote_id)
+															@php
+																$index=1;
+															@endphp
+																<tr>
+																	<td>{{$index}}</td>
+																	<td>{{$line->itemName}}</td>
+																	<td>{{$line->quantity}}</td>
+																	<td>{{$line->units}}</td>
+																	<td>{{(($line->quoted_amount)/($line->quantity))}}</td>
+																	<td>{{$line->quoted_amount}}</td>
+																	<td>{{$line->payable_amount}}</td>
+																	<td>{{$line->lineStatus}}</td>
+																	<td>
+																		@if ($line->status == 5)
+																		<input type="checkbox" name="quoteLine[]" id="" value="{{$line->quote_line_id}}">
+																		@endif
+																	</td>
+																</tr>
+																@php
+																	$index++;
+																@endphp
+															@endif
+														@endforeach
+													</tbody>
+													<tfoot>
+														@if ($quotation->status ==1 ||$quotation->status ==2)
+															<tr>
+																<td colspan="7">
+																		<input type="hidden" name="quote" value="{{$quotation->quote_id}}">
+																		<div class="submit-section">
+																			<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="ApproveInvoice">Approve Invoice</button>
+																		</div>
+																</td>
+															</tr>
+														@endif
+													</tfoot>
+												</table>
+											</form>
 										</div>
 									</td>
 								</tr>
