@@ -37,73 +37,76 @@
 					<table id="item-list-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>
 							<tr style="boder:1px solid black;">
-								<th>#</th>
-								<th>No:</th>
-                                <th>Invoice No.</th>
-								<th>Supplier</th>
-								<th>Store Name</th>
+								<th></th>
+								<th>Date Created</th>
+								<th>Quote No:</th>
+                                <th>Customer name</th>
+								<th>Quoted Amount</th>
+								<th>Payable Amount</th>
+								<th>Status</th>
                                 <th>Creator</th>
-                                <th>Date Created</th>
-								<th>Authorizer</th>
-                                <th>Status</th>
 							</tr>
 						</thead>
 						<tbody>
-							@php
-								$index=1;
-							@endphp
-							@foreach ($invoices as $invoice)
+							@foreach ($quotations as $quotation)
 								<tr>
 									<td>
-									<a class="" data-toggle="collapse" data-target="#demo{{$invoice->invoice_id}}" class="accordion-toggle"><span class='icon-field'><i class="fa fa-eye"></i></span></a>
+									<a class="" data-toggle="collapse" data-target="#demo{{$quotation->quote_id}}" class="accordion-toggle"><span class='icon-field'><i class="fa fa-eye"></i></span></a>
 									</td>
-									<td class="">{{$index}}</td>
-									<td class="">{{$invoice->invoiceNumber}}</td>
-									<td class="">{{$invoice->supplierName}}</td>
-									<td class="">{{$invoice->storeName}}</td>
+									<td class="">{{$quotation->date_created}}</td>
+									<td class="">{{$quotation->quote_id}}</td>
+									<td class="">{{$quotation->customer}}</td>
+									<td class="">{{$quotation->quoted_amount}}</td>
+									<td class="">{{$quotation->payable_amount}}</td>
+									<td class="">
+										@foreach($quoteStatuses as $status)
+										@if($quotation->status == $status->status_id){{$status->name }} @endif
+										@endforeach</td>
 									<td class="">
 										@foreach($users as $userss)
-										@if($invoice->created_by == $userss->id){{$userss->name }} @endif
+										@if($quotation->created_by == $userss->id){{$userss->name }} @endif
 										@endforeach</td>
-									<td class="">{{$invoice->date_created}}</td>
-									<td class="">
-										@foreach($users as $userss)
-										@if($invoice->completed_by == $userss->id){{$userss->name }} @endif
-										@endforeach</td>
-									<td class="">{{  ($invoice->completed ==1) ? "Completed" : "New" }}</td>
 								</tr>
 								<tr>
 									<td colspan="9" class="hiddenRow">
-										<div class="accordian-body collapse" id="demo{{$invoice->invoice_id}}">
+										<div class="accordian-body collapse" id="demo{{$quotation->quote_id}}">
 											<table class="table table-striped" id="list">
 												<thead>
 													<tr>
+														<th>SN.</th>
 														<th>Item Name</th>
-														<th>UOM</th>
-														<th>Batch</th>
-														<th>Batch Quantity</th>
-														<th>Expire Date</th>
-														<th>Unit Price</th>
-														<th>Amount</th>
+														<th>Quantity</th>
+														<th>Units</th>
+														<th>Price @ unit</th>
+														<th>Quoted Amount</th>
+														<th>Payable Amount</th>
+														<th>Status</th>
+														<th></th>
 													</tr>
 												</thead>
 												<tbody>
-													@foreach ($invoiceItems as $item)
-														@if ($item->invoice == $invoice->invoice_id)
+													@foreach ($quotationLines as $line)
+														@if ($line->quote == $quotation->quote_id)
+														@php
+															$index=1;
+														@endphp
 															<tr>
-																<td>{{$item->itemName}}</td>
-																<td>{{$item->uOM}}</td>
-																<td>{{$item->batchNo}}</td>
-																<td>{{$item->quantity}}</td>
-																<td>{{$item->expireDate}}</td>
-																<td>{{$item->unit_price}}</td>
-																<td>{{$item->unit_price * $item->quantity}}</td>
+																<td>{{$index}}</td>
+																<td>{{$line->uOM}}</td>
+																<td>{{$line->batchNo}}</td>
+																<td>{{$line->quantity}}</td>
+																<td>{{$line->expireDate}}</td>
+																<td>{{$line->unit_price}}</td>
+																<td>{{$line->unit_price * $item->quantity}}</td>
 															</tr>
+															@php
+																$index++;
+															@endphp
 														@endif
 													@endforeach
 												</tbody>
 												<tfoot>
-													@if ($invoice->completed ==0)
+													@if ($quotation->status ==0)
 														<tr>
 															<td colspan="7">
 																<form action="{{route('invoice-approval')}}" enctype="multipart/form-data" id="update_invoice{{$invoice->invoice_id}}" method="post">
@@ -121,9 +124,6 @@
 										</div>
 									</td>
 								</tr>
-								@php
-									$index++;
-								@endphp
 							@endforeach
 						</tbody>
 					</table>

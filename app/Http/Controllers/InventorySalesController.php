@@ -13,6 +13,7 @@ use App\Models\InventorySaleQuoteLine;
 use App\Models\InventorySaleQuoteReferenceMap;
 use App\Models\InventorySaleOrderByQuote;
 use App\Models\InventorySaleOrderByQuoteLine;
+use App\Models\InventorySaleStatus;
 use App\Models\InventoryStore;
 use App\Models\InventoryStockOnHand;
 use App\Models\ItemPriceType;
@@ -118,9 +119,10 @@ class InventorySalesController extends Controller
         $items=InventoryItem::where('voided','=',0)->get();
         $units=ItemUnits::where('voided','=',0)->get();
         $quotations=InventorySaleQuoteLine::get();
+        $quoteStatuses=InventorySaleStatus::get();
         $quotationLines=InventorySaleQuoteLine::get();
         return view('inventory.quotation',compact(
-            'createInsuranceSales','title','items','units','users','quotations','quotationLines'
+            'createInsuranceSales','title','items','units','users','quotations','quotationLines','quoteStatuses'
         ));
     }
     public function searchQuotations($quote)
