@@ -156,7 +156,7 @@
 
 		$(document).ready(function() {
 			function call_to_set_Selected(permissions) {
-				console.log('Selected')
+				// console.log('Selected')
 				for (var i = 0; i < permissions.length; i++) {
 					$('option[value="' + permissions[i].name + '"]', $('#edit_perms')).prop('selected', true);
 				}
@@ -170,8 +170,8 @@
 				var id = $(this).data('id');
 				var role = $(this).data('role');
 				var permissions = $(this).data('permissions');
-				console.log(permissions)
-				console.log(permissions.length)
+				// console.log(permissions)
+				// console.log(permissions.length)
 				$('#edit_id').val(id);
 				$('.edit_role').val(role);
 				// $('.edit_perms').val(permissions).trigger();
