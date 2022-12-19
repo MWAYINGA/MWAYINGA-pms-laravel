@@ -52,7 +52,6 @@
 												<span class="noti-title">{{$notification->data['product_name']}} is only {{$notification->data['quantity']}} left.</span>
 												<span>Please update the purchase quantity </span>
 											</p>
-											
 											<p class="noti-time"><span class="notification-time">{{$notification->created_at->diffForHumans()}}</span></p>
 										</div>
 									</div>
@@ -82,7 +81,7 @@
 							<select class="select2 form-select form-control" name="storeUuid" id="storeUuid" onchange="javascript: if(this.value != '0') this.form.submit();"> 
 								<option value=""></option>
 								@foreach ($Stores as $store)
-									<option value="{{$store->uuid}}" data-store_uuid="{{$store->uuid}}" data-store_name="{{$store->name}}" class="form-control" {{  (session('storeUuid') ==$store->uuid) ? "selected" : "" }}>{{$store->name}}</option>
+									<option value="{{$store->uuid}}" data-store_uuid="{{$store->uuid}}" data-store_name="{{$store->name}}" class="form-control" {{  (session('storeUuid') == $store->uuid) ? "selected" : "" }}>{{$store->name}}</option>
 								@endforeach
 							</select>
 						</form>

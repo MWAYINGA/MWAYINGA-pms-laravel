@@ -43,7 +43,7 @@
 @font-face {
 	font-family: 'Material Icons';
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 200;
 	src: url(../fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
 	src: local('Material Icons'),
 	local('MaterialIcons-Regular'),
@@ -201,7 +201,7 @@ textarea.form-control {
 table.table td h2 {
 	display: inline-block;
 	font-size: inherit;
-	font-weight: 400;
+	font-weight: 300;
 	margin: 0;
 	padding: 0;
 	vertical-align: middle;
@@ -210,7 +210,7 @@ table.table td h2.table-avatar {
     align-items: center;
     display: inline-flex;
     font-size: inherit;
-    font-weight: 400;
+    font-weight: 300;
     margin: 0;
     padding: 0;
     vertical-align: middle;
@@ -233,7 +233,7 @@ table.table td h2 span {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 .table thead tr th {
-	font-weight: 600;
+	font-weight: 500;
 	border: 0;
 }
 .table tbody tr {
@@ -2540,10 +2540,10 @@ html.menu-opened body {
 }
 .submit-btn {
     border-radius: 50px;
-    font-size: 18px;
-    font-weight: 600;
-    min-width: 200px;
-    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    min-width: 100px;
+    padding: 5px 10px;
 }
 
 /*-----------------

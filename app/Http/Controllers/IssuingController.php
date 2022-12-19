@@ -66,6 +66,7 @@ class IssuingController extends Controller
         ->join('inventory_stores as iss','iss.store_id','ishb.store')
         ->select('ishb.*','iib.batch_no as batchNo','iib.item as item','iib.expire_date as expireDate','iib.bath_reference_id as batchId')
         ->where('iib.voided',0)
+        ->where('ishb.store',$destinantionStore->store_id)
         ->get();
         return view('inventory.issuing',compact(
             'requests','viewRequest','title','items','units','requestItems','stores','users','requestStatus','onHandItemBatch'

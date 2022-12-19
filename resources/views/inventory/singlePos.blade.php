@@ -17,138 +17,18 @@
 	@isset($createNormalSales)
 	<a href="{{route('pos-insurance')}}" class="btn btn-primary float-right mt-2">Insurance</a>
 	@endisset
-	@isset($createInsuranceSales)
-	<a href="{{route('pos-normal')}}" class="btn btn-primary float-right mt-2">Normal Sales</a>
-	@endisset
 </div>
 
 @endpush
 
 @section('content')
 
-@isset($createInsuranceSales)
-{{-- Insurance Sales --}}
-<div class="row">
-	<div class="col-sm-12">
-		<div class="card">
-			<div class="card-body">
-				<form method="post" enctype="multipart/form-data" id="update_service" action="{{route('pos-insurance')}}">
-					@csrf
-                    <div class="service-fields">
-                        <input type="text" name="sessionType" id="" value="{{$createInsuranceSales}}" hidden>
-						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group">
-									<label>Insurance Type </label>
-									<select class="select2 form-select form-control" id="insuranceType" name="insuranceType">
-										<option value="">select Insurance</option> 
-										@foreach ($insuranceType as $type)
-											<option value="{{$type->price_type_id}}" data-insurance_type_id="{{$type->price_type_id}}" data-insurance_type_name="{{$type->name}}">{{$type->name}}</option>
-										@endforeach
-									</select>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label>Folio Number <span class="text-danger">*</span></label>
-									<input class="form-control" type="text" id="folioNumber" name="folioNumber">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="service-fields">
-						<div class="row">
-							<div class="col-md-3">
-								<div class="form-group">
-									<label>Item <span class="text-danger">*</span></label>
-									<select class="select2 form-select form-control" id="itemName"> 
-										<option value="">select Item</option> 
-										@foreach ($items as $item)
-											<option value="{{$item->inv_item_id}}" data-item_id="{{$item->inv_item_id}}" data-item_name="{{$item->name}}">{{$item->name}}</option>
-										@endforeach
-									</select>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="form-group">
-									<label>UOM </label>
-									<select class="select2 form-select form-control" id="uom">
-										<option value="">select Unit of Measure</option> 
-										@foreach ($units as $unit)
-											<option value="{{$unit->unit_id}}" data-uom_id="{{$unit->unit_id}}" data-uom_name="{{$unit->name}}">{{$unit->name}}</option>
-										@endforeach
-									</select>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="form-group">
-									<label>Qty <span class="text-danger">*</span></label>
-									<input class="form-control" type="text" id="itemQty">
-								</div>
-							</div>
-							{{csrf_field()}}
-                            <div class="col-lg-3">
-								<div class="form-group">
-									<a href="javascript:void(0)" class="btn btn-primary float-right mt-2" id="add-to-list">Add Item</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="service-fileds">
-						<div class="row">
-							<table class="table table-bordered" id="list">
-								<colgroup>
-									<col width="30%">
-									<col width="10%">
-									<col width="20%">
-									<col width="10%">
-									<col width="20%">
-									<col width="10%">
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="text-center">Product</th>
-										<th class="text-center">Qty</th>
-										<th class="text-center">Dosage Form</th>
-										<th class="text-center">Price</th>
-										<th class="text-center">Amount</th>
-										<th class="text-center"></th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-								<tfoot>
-									<tr>
-										<th class="text-right" colspan="4">Total</th>
-										<th class="text-right tamount"></th>
-										<th></th>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
-					</div>
-					<div class="service-fields">
-						<div class="row">
-							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processOrder">SAVE</button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-{{-- Insurance Sales --}}
-@endisset
-
-@isset($createNormalSales)
 {{-- Normal Sales --}}
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
-				<form method="post" enctype="multipart/form-data" id="update_service" action="{{route('pos-normal')}}">
+				<form method="post" enctype="multipart/form-data" id="update_service" action="{{route('pos-normal-solo')}}">
 					@csrf
 					<div class="service-fields">
 						<div class="row">
@@ -232,17 +112,51 @@
 					<div class="service-fields">
 						<div class="row">
 							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processPayment">SAVE</button>
+								<a href="javascript:void(0)" class="btn btn-primary float-right mt-2" id="processPayment">Payments</a>
 							</div>
 						</div>
 					</div>
+					{{-- Modal for payment --}}
+					<div class="modal fade" id="pay_modal" role='dialog'>
+					    <div class="modal-dialog modal-md" role="document">
+					        <div class="modal-content">
+					         	<div class="modal-header">
+					        		<h5 class="modal-title"></h5>
+					      		</div>
+					     		<div class="modal-body">
+						 			<div class="container-fluid">
+										<div class="form-group">
+											<label for="" class="control-label">Total Amount</label>
+											<input type="text" name="tamount" value="" class="form-control text-right" readonly="">
+										</div>
+										<div class="form-group">
+											<label for="" class="control-label">Amount Tendered</label>
+											<input type="number" name="amount_tendered" value="0" min="0" class="form-control text-right" >
+										</div>
+										{{-- <div class="form-group">
+											<label for="" class="control-label">Discount</label>
+											<input type="number" name="amount_discounted" value="" min="0" class="form-control text-right" >
+										</div> --}}
+										<div class="form-group">
+											<label for="" class="control-label">Change</label>
+											<input type="number" name="change" value="0" min="0" class="form-control text-right" readonly="">
+										</div>
+					      			</div>
+					      		</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" id='submitPayment'>Pay</button>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								</div>
+					      	</div>
+					    </div>
+					</div>
+					{{-- Modal for payment --}}
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
 {{-- Normal Sales --}}
-@endisset
 
 {{-- Table row to clone --}}
 <div id="tr_clone">
@@ -314,7 +228,6 @@
 @endsection
 
 
-
 @push('page-js')
 <!-- Select2 JS -->
 	<script src="{{asset('assets/plugins/select2/js/select2.min.js')}}"></script>
@@ -336,6 +249,46 @@
             $('#list .tamount').html(parseFloat(total).toLocaleString('en-US',{style:'decimal',maximumFractionDigits:2,minimumFractionDigits:2}))
         }
 		$(document).ready(function() {
+			// change
+			$('#submitPayment').click(function() {
+				if ($('[name="change"]').val()<0) {
+					Snackbar.show({
+						text: "Please insert atleast 1 item first.",
+						pos: 'top-right',
+						actionTextColor: '#fff',
+						backgroundColor: '#e7515a'
+					});
+					return false;
+				}else{
+					this.form.submit();
+				}
+			});
+			$('[name="amount_tendered"]').keyup(function(){
+				var tendered = $(this).val();
+				var tamount = $('[name="tamount"]').val();
+				$('[name="change"]').val(parseFloat(tendered) - parseFloat(tamount))
+				if ($('[name="change"]').val()<0) {
+					Snackbar.show({
+						text: "Please insert atleast 1 item first.",
+						pos: 'top-right',
+						actionTextColor: '#fff',
+						backgroundColor: '#e7515a'
+					});
+					return false;
+				}
+			});
+			$('#processPayment').click(function(){
+				if($("#list .item-row").length <= 0){
+					Snackbar.show({
+						text: "The required amount is "+tamount+"",
+						pos: 'top-right',
+						actionTextColor: '#fff',
+						backgroundColor: '#e7515a'
+					});
+					return false;
+				}
+				$('#pay_modal').modal('show')
+			});
 			$('#add-to-list').click(function(){
 				event.preventDefault();
 				jQuery.noConflict();

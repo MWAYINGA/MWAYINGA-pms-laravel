@@ -62,8 +62,8 @@
 						@can('manage-stock-issuing')<li class="{{ Request::routeIs('issuing') ? 'active' : '' }}"><a href="{{route('issuing')}}"> <span>Issuing</span></a></li>@endcan
 						@can('view-stocks-binCard')<li><a class="{{ Request::routeIs('binCards') ? 'active' : '' }}" href="{{route('binCards')}}">Bin Card</a></li>@endcan 
 						@can('view-stocks-ledger')<li><a class="{{ Request::routeIs('ledger') ? 'active' : '' }}" href="{{route('ledger')}}">Ledger</a></li>@endcan
-						{{-- @can('manage-item-price-type')<li><a class="{{ Request::routeIs('priceType') ? 'active' : '' }}" href="{{route('priceType')}}">Price Types</a></li>@endcan
-						@can('manage-supplier')<li><a class="{{ Request::routeIs('supplier') ? 'active' : '' }}" href="{{route('supplier')}}">Suppliers</a></li>@endcan --}}
+						@can('manage-item-price-type')<li><a class="{{ Request::routeIs('detailedStockStatus') ? 'active' : '' }}" href="{{route('detailedStockStatus')}}">Detailed Stock Status</a></li>@endcan
+						@can('manage-supplier')<li><a class="{{ Request::routeIs('stockStatus') ? 'active' : '' }}" href="{{route('stockStatus')}}">Stock Status</a></li>@endcan
 					</ul>
 				</li>
 				@endcan	

@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryCustomer extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'full_name',
+        'created_by',
+        'uuid'
+    ];
+    public $timestamps = false;
 }

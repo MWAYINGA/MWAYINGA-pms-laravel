@@ -25,7 +25,7 @@ class CreateInventoryDispensingOrdersTable extends Migration
             $table->double('equivalent_quantity')->nullable(false);
             $table->foreignId('quantifying_store')->nullable(false)->constrained('fk_inventory_dispensing_orders_quantifying_store')
             ->references('store_id')->on('inventory_stores')->onDelete('cascade');
-            $table->foreignId('dispensing_store')->nullable(false)->constrained('fk_inventory_dispensing_orders_dispensing_store')
+            $table->foreignId('dispensing_store')->nullable()->constrained('fk_inventory_dispensing_orders_dispensing_store')
             ->references('store_id')->on('inventory_stores')->onDelete('cascade');
             $table->boolean('dipensed')->default(0);
             $table->foreignId('dipensed_by')->nullable()->constrained('fk_inventory_dispensing_orders_dipensed_by')

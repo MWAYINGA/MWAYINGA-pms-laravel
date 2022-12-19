@@ -115,7 +115,7 @@ class InventoryRequestController extends Controller
                     }
                 }else {
                     # code...
-                    $values[0] =='RQ.'.Carbon::now()->format('ym');
+                    $values[0] ='RQ.'.Carbon::now()->format('ym');
                     $new_middle_number=sprintf("%'03d", (1));
                     $new_last_number=sprintf("%'03d", (1));
                     $new_first_string=$values[0];
@@ -141,16 +141,17 @@ class InventoryRequestController extends Controller
     public function store(Request $request)
     {
         //
-
         try {
             //code...
+            // dd($request->all());
             DB::beginTransaction();
             $uuid= (string)Str::uuid();
-            $destination_store =$request->store;
-            $items=$request->item;
+            $destination_store=$request->store;
+            $item=$request->item;
             $qty=$request->qty;
-            $requestNumber = $request->requestNumber;
+            $requestNumber=$request->requestNumber;
             $units=$request->unit; 
+            // dd('mayai');
             $source_store = InventoryStore::where('uuid','=',session('storeUuid'))->get()->first();
             InventoryRequest::create([
                 'destination_store'=>$destination_store,
@@ -158,13 +159,13 @@ class InventoryRequestController extends Controller
                 'created_by'=>Auth::user()->id,
                 'uuid'=>$uuid
             ]);
-            $request=InventoryRequest::where('uuid',$uuid)->get()->first();
-    
-            foreach ($items as $k => $v) {
+            $requests=InventoryRequest::where('uuid',$uuid)->get()->first();
+    // dd();
+            foreach ($item as $k => $v) {
                 # code...
                 InventoryRequestItem::create([
-                    'request'=>$request->request_id,
-                    'item'=>$items[$k],
+                    'request'=>$requests->request_id,
+                    'item'=>$item[$k],
                     'units'=>$units[$k],
                     'quantity'=>$qty[$k],
                     'equivalent_quantity'=>$qty[$k],
@@ -175,7 +176,7 @@ class InventoryRequestController extends Controller
             if ($requestNumber != "" ) {
                 # code...
                 InventoryRequestNumber::create([
-                    'request'=>$request->request_id,
+                    'request'=>$requests->request_id,
                     'source'=>2,
                     'value'=>$requestNumber,
                     'created_by'=>Auth::user()->id,
@@ -191,7 +192,7 @@ class InventoryRequestController extends Controller
             }else {
                 # code...
                 InventoryRequestNumber::create([
-                    'request'=>$request->request_id,
+                    'request'=>$requests->request_id,
                     'source'=>1,
                     'value'=>$this->createRequestNumber(),
                     'created_by'=>Auth::user()->id,
@@ -202,13 +203,12 @@ class InventoryRequestController extends Controller
             $notification=array(
                 'message'=>"Request has been Saved",
                 'alert-type'=>'success',
-            );
-            
+            );  
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
             $notification=array(
-                'message'=>$th->getMessage(),
+                'message'=>$th->getMessage()." ".$th->error,
                 'alert-type'=>'danger',
             );
             return redirect()->route('requisition')->with($notification);
@@ -375,16 +375,17 @@ class InventoryRequestController extends Controller
                 ->where('ivsri.request_item',$requestItem)
                 ->where('ir.source_store',$requestingStore->store_id)
                 ->where('ir.voided',0)
-                ->where('ir.completed',0)->get();
+                ->get();
                 if ($voucherItems->isEmpty()) {
                     # code...
                     $notification=array(
-                        'message'=>"request With Store Location Not Found",
+                        'message'=>"request With Store Location Not Found ",
                         'alert-type'=>'danger',
                     );
                     return redirect()->route('requisition')->with($notification);
                 } else {
                     # code...
+                    // dd($voucherItems);
                     foreach ($voucherItems as $voucherItem) {
                         # code...
                        $inventoryVoucherStockRequestItem= InventoryVoucherStockRequestItem::where('request_item','=',$voucherItem->request_item);
@@ -456,7 +457,7 @@ class InventoryRequestController extends Controller
             //throw $th;
             DB::rollBack();
             $notification=array(
-                'message'=>$th->getMessage(),
+                'message'=>$th->getMessage()." ",
                 'alert-type'=>'danger',
             );
             return redirect()->route('requisition')->with($notification);

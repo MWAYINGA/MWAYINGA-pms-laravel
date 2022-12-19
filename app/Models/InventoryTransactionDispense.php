@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InventorySaleQuote extends Model
+class InventoryTransactionDispense extends Model
 {
     use HasFactory;
     protected $fillable =[
-        'customer',
-        'total_quote',
-        'payable_amount',
-        'status',
+        'transaction',
+        'dispense_order',
         'created_by',
         'uuid'
     ];

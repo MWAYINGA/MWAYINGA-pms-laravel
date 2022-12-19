@@ -118,7 +118,7 @@
 																					<div class="col-md-3">issue</div>
 																				</div>
 																				<hr>																				
-																				@foreach ($onHandItemBatch as $batch)
+																				@foreach ($onHandItemBatch->where('item',$item->itemId) as $batch)
 																				<div class="row">
 																					<div class="col-md-3">{{$batch->batchNo}}</div>
 																					<div class="col-md-3">{{$batch->expireDate}}</div>
@@ -129,8 +129,11 @@
 																					</div>
 																				</div>
 																				@endforeach
-																				<div class="submit-section">
-																					<button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Issue" id="issueB{{$item->request}}">Issue</button>
+
+																				<div class="row">
+																					<div class="submit-section">
+																						<button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Issue" id="issueB{{$item->request}}">Issue</button>
+																					</div>
 																				</div>
 																			@endif
 																		</div>

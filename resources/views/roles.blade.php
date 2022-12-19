@@ -126,7 +126,7 @@
 							</div>
 							<div class="form-group">
 								<lable>Select Permissions</lable>
-								<select class="select2 form-select form-control edit_perms" name="permission[]" multiple="multiple"> 
+								<select class="select2 form-select form-control edit_perms" name="permission[]" multiple="multiple" id="edit_perms"> 
 									@foreach ($permissions as $permission)
 										<option value="{{$permission->name}}">{{$permission->name}}</option>
 									@endforeach
@@ -153,17 +153,29 @@
 <!-- Select2 js-->
 <script src="{{asset('assets/plugins/select2/js/select2.min.js')}}"></script>
 	<script>
+
 		$(document).ready(function() {
-			$('#role').on('click','.editbtn',function (){
+			function call_to_set_Selected(permissions) {
+				console.log('Selected')
+				for (var i = 0; i < permissions.length; i++) {
+					$('option[value="' + permissions[i].name + '"]', $('#edit_perms')).prop('selected', true);
+				}
+				$('#edit_perms').multiselect('refresh');
+			}
+			$('.editbtn').on('click',function (){
+				console.log('editbtn')
 				event.preventDefault();
 				jQuery.noConflict();
 				$('#edit_role').modal('show');
 				var id = $(this).data('id');
 				var role = $(this).data('role');
 				var permissions = $(this).data('permissions');
+				console.log(permissions)
+				console.log(permissions.length)
 				$('#edit_id').val(id);
 				$('.edit_role').val(role);
-				$('.edit_perms').val(permissions);
+				// $('.edit_perms').val(permissions).trigger();
+				call_to_set_Selected(permissions);
 			});
 			//
 		});

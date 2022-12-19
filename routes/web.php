@@ -110,11 +110,13 @@ Route::group(['middleware'=>['auth']],function (){
     Route::get('stocks',[InventoryRequestController::class,'index'])->name('requisition');
     Route::get('stocks/requisition',[InventoryRequestController::class,'create'])->name('new-request');
     Route::post('stocks/requisition',[InventoryRequestController::class,'store']);
-    Route::post('stocks/requisition',[InventoryRequestController::class,'approval'])->name('requisition-approval');
+    Route::post('requisition/approval',[InventoryRequestController::class,'approval'])->name('requisition-approval');
     Route::get('stocks/issuing',[IssuingController::class,'index'])->name('issuing');
     Route::post('stocks/issuing',[IssuingController::class,'store']);
     Route::post('stocks/bincard',[StocksReportsController::class,'bincard'])->name('binCards');
     Route::post('stocks/ledger',[StocksReportsController::class,'ledger'])->name('ledger');
+    Route::get('stocks/stockStatus',[StocksReportsController::class,'stockStatus'])->name('stockStatus');
+    Route::get('stocks/detailedStockStatus',[StocksReportsController::class,'detailedStockStatus'])->name('detailedStockStatus');
 
     Route::get('stores',[InventoryStoreController::class,'index'])->name('stores');
     Route::get('stores/create',[InventoryStoreController::class,'create'])->name('add-store');
@@ -134,6 +136,7 @@ Route::group(['middleware'=>['auth']],function (){
 
     Route::get('pos',[InventorySalesController::class,'index'])->name('pos-normal');
     Route::post('pos',[InventorySalesController::class,'store']);
+    Route::post('pos',[InventorySalesController::class,'singlePos'])->name('pos-normal-solo');
     Route::get('pos/quotations',[InventorySalesController::class,'quotations'])->name('pos-quotations');
     Route::post('pos/quotations',[InventorySalesController::class,'saveQuotations']);
     Route::get('pos/orders',[InventorySalesController::class,'orders'])->name('pos-orders');
@@ -141,7 +144,7 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('pos/stockPrice',[InventorySalesController::class,'itemPriceStockAvailable'])->name('item-price-stock-available');
     Route::get('pos/insurance',[InventorySalesController::class,'posInsurance'])->name('pos-insurance');
     Route::post('pos/insurance',[InventorySalesController::class,'storeInsurance']);
-    Route::post('pos',[InventorySalesController::class,'checkStatus']);
+    Route::post('pos/checkStatus',[InventorySalesController::class,'checkStatus']);
     // Route::delete('sales',[InventorySalesController::class,'destroy']);
 
     Route::get('itemUnits',[ItemUnitsController::class,'index'])->name('itemUnits');

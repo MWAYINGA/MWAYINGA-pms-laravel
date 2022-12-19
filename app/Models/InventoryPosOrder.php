@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryPosOrder extends Model
 {
     use HasFactory;
+    protected $fillable =[
+        'source',
+        'item',
+        'units',
+        'quantity',
+        'created_by',
+        'uuid'
+    ];
+    public $timestamps = false;
 }

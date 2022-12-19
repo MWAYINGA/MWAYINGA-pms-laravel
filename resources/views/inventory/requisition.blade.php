@@ -73,7 +73,7 @@
 									<td colspan="9" class="hiddenRow">
 										<div class="accordian-body collapse" id="demo{{$request->request_id}}">
 											<table class="table table-striped" id="list">
-												<form action="{{route('requisition-approval')}}" method="post">
+												<form action="{{route('requisition-approval')}}" method="post" enctype="multipart/form-data">
 													@csrf
 													<thead>
 														<tr>
@@ -115,7 +115,7 @@
 														<tr>
 															<td colspan="5">
 																<div class="">
-																	<button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Issue" id="issueB{{$item->request}}">Issue</button>
+																	<button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Submit" id="issueB{{$item->request}}">Submit</button>
 																</div>
 															</td>
 														</tr>
@@ -146,7 +146,7 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
-				<form method="post" enctype="multipart/form-data" id="update_service" action="{{route('new-request')}}">
+				<form method="post" enctype="multipart/form-data" id="update_service__" action="{{route('new-request')}}">
 					@csrf
 					<div class="service-fields">
 						<div class="row">
@@ -256,9 +256,9 @@
 	<table>
 	<tr class="item-row">
 		<td>
-            {{-- <a class="btnbtn-danger" onclick = "rem_list($(this))"><i class="fa fa-trash"></i></a> --}}
-			<input type="hidden" name="item[]" value="">
-			<span><a class="btnbtn-danger" onclick = "rem_list($(this))"><i class="fa fa-trash"></i></a> <span class="item"></span></span>
+            <a class="btnbtn-danger" onclick = "rem_list($(this))"><i class="fa fa-trash"></i></a>
+			<input type="hidden" name="item[]">
+			{{-- <span><a class="btnbtn-danger" onclick = "rem_list($(this))"><i class="fa fa-trash"></i></a> <span class="item"></span></span> --}}
 			<p class="item"></p>
 		</td>
 		<td>

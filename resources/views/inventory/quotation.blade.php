@@ -26,7 +26,6 @@
 
 @section('content')
 
-@isset($viewInvoice)
 {{-- Quotations List --}}
 <div class="row">
 	<div class="col-sm-12">
@@ -34,7 +33,7 @@
 			<div class="card-body">
 				{{-- {{$invoiceItems}} --}}
 				<div class="table-responsive">
-					<table id="item-list-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
+					<table id="quotations-list-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>
 							<tr style="boder:1px solid black;">
 								<th></th>
@@ -55,13 +54,10 @@
 									</td>
 									<td class="">{{$quotation->date_created}}</td>
 									<td class="">{{$quotation->quote_id}}</td>
-									<td class="">{{$quotation->customer}}</td>
-									<td class="">{{$quotation->quoted_amount}}</td>
+									<td class="">{{$quotation->customerName}}</td>
+									<td class="">{{$quotation->total_quote}}</td>
 									<td class="">{{$quotation->payable_amount}}</td>
-									<td class="">
-										@foreach($quoteStatuses as $status)
-										@if($quotation->status == $status->status_id){{$status->name }} @endif
-										@endforeach</td>
+									<td class="">{{$quotation->quoteStatus }} </td>
 									<td class="">
 										@foreach($users as $userss)
 										@if($quotation->created_by == $userss->id){{$userss->name }} @endif
@@ -96,7 +92,7 @@
 																	<td>{{$index}}</td>
 																	<td>{{$line->itemName}}</td>
 																	<td>{{$line->quantity}}</td>
-																	<td>{{$line->units}}</td>
+																	<td>{{$line->uOM}}</td>
 																	<td>{{(($line->quoted_amount)/($line->quantity))}}</td>
 																	<td>{{$line->quoted_amount}}</td>
 																	<td>{{$line->payable_amount}}</td>
@@ -116,11 +112,10 @@
 													<tfoot>
 														@if ($quotation->status ==1 ||$quotation->status ==2)
 															<tr>
-																<td colspan="7">
+																<td colspan="7"></td>
+																<td colspan="2">
 																		<input type="hidden" name="quote" value="{{$quotation->quote_id}}">
-																		<div class="submit-section">
-																			<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="ApproveInvoice">Approve Invoice</button>
-																		</div>
+																		<button class="btn btn-sm btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="quoteSubmit">Submit</button>
 																</td>
 															</tr>
 														@endif
@@ -139,7 +134,7 @@
 	</div>			
 </div>
 {{-- Quotations List --}}
-@endisset
+
 
 <!-- Delete Modal -->
 {{-- <x-modals.delete :route="'items'" :title="'Item List'" /> --}}
