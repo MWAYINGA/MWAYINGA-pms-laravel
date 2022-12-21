@@ -169,7 +169,7 @@
 				var role = $(this).data('role');
 				var permissions = $(this).data('permissions');
 				console.log('permissions: ',permissions)
-				console.log('permissions length: ',permissions.length)
+				console.log('permissions length: ',permissions.length);
 				$('#edit_id').val(id);
 				$('.edit_role').val(role);
 				// $('.edit_perms').val(permissions).trigger();

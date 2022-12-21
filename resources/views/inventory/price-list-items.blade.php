@@ -51,7 +51,6 @@
                                     @endforeach
                                 </td>
 								<td>{{date_format(date_create($itemunit->date_created),"d M,Y")}}</td>
-
 								<td class="text-center">
 									<div class="actions">
 										<a data-id="{{$itemunit->unit_id}}" data-name="{{$itemunit->name}}" class="btn btn-sm bg-success-light editbtn " data-toggle="modal" href="javascript:void(0)">

@@ -113,7 +113,8 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('requisition/approval',[InventoryRequestController::class,'approval'])->name('requisition-approval');
     Route::get('stocks/issuing',[IssuingController::class,'index'])->name('issuing');
     Route::post('stocks/issuing',[IssuingController::class,'store']);
-    Route::post('stocks/bincard',[StocksReportsController::class,'bincard'])->name('binCards');
+    Route::get('stocks/binCard',[StocksReportsController::class,'binCard'])->name('binCards');
+    Route::post('stocks/binCard',[StocksReportsController::class,'binCardSearch']);
     Route::post('stocks/ledger',[StocksReportsController::class,'ledger'])->name('ledger');
     Route::get('stocks/stockStatus',[StocksReportsController::class,'stockStatus'])->name('stockStatus');
     Route::get('stocks/detailedStockStatus',[StocksReportsController::class,'detailedStockStatus'])->name('detailedStockStatus');

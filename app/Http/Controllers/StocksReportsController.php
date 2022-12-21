@@ -24,26 +24,41 @@ use Ramsey\Uuid\Uuid;
 class StocksReportsController extends Controller
 {
     //
-        /**
+    /**
+     * Display a listing of the resource.
+     * 
+     * @return \Illuminate\Http\Response
+     */  
+    public function binCard(){
+        $title="Bin Card";
+        $items=InventoryItem::where('voided','=',0)->get();
+        $stores=InventoryStore::where('voided','=',0)->get();
+        $units=ItemUnits::where('voided','=',0)->get();
+        return view('inventory.binCard',compact(
+            'title','items','units','stores',
+        ));
+    }
+    /**
      * Display a listing of the resource.
      * 
      *@param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function bincard(Request  $request)
+    public function binCardSearch(Request  $request)
     {
         //
-        $createInsuranceSales="createInsuranceSales";
-        $title="Insurance Sales";
+        $title="Bin Card";
+        $binCard="Bin Card";
         $users = User::get();
-        $keyword="Insurance";
         $items=InventoryItem::where('voided','=',0)->get();
         $units=ItemUnits::where('voided','=',0)->get();
-        return view('inventory.pos',compact(
-            'createInsuranceSales','title','items','units','users','insuranceType'
+        $binItems="";
+        return view('inventory.binCard',compact(
+            'createInsuranceSales','title','items','units','users','binCard'
         ));
 
     }
+
 
     /**
      * Display a listing of the resource.
