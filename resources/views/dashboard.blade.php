@@ -46,12 +46,12 @@
 							<i class="fe fe-credit-card"></i>
 						</span>
 						<div class="dash-count">
-							<h3>{{$total_categories}}</h3>
+							<h3>{{$today_transaction}}</h3>
 						</div>
 					</div>
 					<div class="dash-widget-info">
 						
-						<h6 class="text-muted">Product Categories</h6>
+						<h6 class="text-muted">Todays Transactions</h6>
 						<div class="progress progress-sm">
 							<div class="progress-bar bg-success w-50"></div>
 						</div>
@@ -67,12 +67,12 @@
 							<i class="fe fe-folder"></i>
 						</span>
 						<div class="dash-count">
-							<h3>{{$total_expired_products}}</h3>
+							<h3>{{$near_to_expired_products}}</h3>
 						</div>
 					</div>
 					<div class="dash-widget-info">
 						
-						<h6 class="text-muted">Expired Products</h6>
+						<h6 class="text-muted">Near to Expire</h6>
 						<div class="progress progress-sm">
 							<div class="progress-bar bg-danger w-50"></div>
 						</div>
@@ -88,12 +88,12 @@
 							<i class="fe fe-users"></i>
 						</span>
 						<div class="dash-count">
-							<h3>{{\DB::table('users')->count()}}</h3>
+							<h3>{{$outOfStock}}</h3>
 						</div>
 					</div>
 					<div class="dash-widget-info">
 						
-						<h6 class="text-muted">System Users</h6>
+						<h6 class="text-muted">Out of Stock</h6>
 						<div class="progress progress-sm">
 							<div class="progress-bar bg-warning w-50"></div>
 						</div>

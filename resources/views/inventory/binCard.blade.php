@@ -19,42 +19,51 @@
 @section('content')
 
 
+@isset($binCardSearch)
 <div class="row">
     <div class="col-lg-12">
         <form action="{{route('binCards')}}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label>Item Name<span class="text-danger">*</span></label>
-                        <select class="select2 form-select form-control" id="itemName" name="item"> 
-                            <option value="">select Item</option> 
-                            @foreach ($items as $item)
-                                <option value="{{$item->inv_item_id}}" data-item_id="{{$item->inv_item_id}}" data-item_name="{{$item->name}}">{{$item->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Store</label>
-                        <select class="select2 form-select form-control" id="storeName" name="store"> 
+                        <label>Item Name<span class="text-danger">*</span></label>
+                        <select class="select2 form-select form-control" id="itemName" name="itemUuid" required> 
                             <option value="">select Item</option> 
                             @foreach ($items as $item)
-                                <option value="{{$item->inv_item_id}}" data-item_id="{{$item->inv_item_id}}" data-item_name="{{$item->name}}">{{$item->name}}</option>
+                                <option value="{{$item->uuid}}" data-item_id="{{$item->inv_item_id}}" data-item_name="{{$item->name}}">{{$item->name}}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Store</label>
+                        <select class="select2 form-select form-control" id="storeName" name="storeUuid"> 
+                            <option value="">select Store</option> 
+                            @foreach ($stores as $store)
+                                <option value="{{$store->uuid}}" data-store_id="{{$store->store_id}}" data-store_name="{{$store->name}}">{{$store->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Month</label>
+                        <input type="month" name="monthYear" id="" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
                     <div class="submit-section">
-                        <button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Issue" id="issueB{{$item->request}}">Issue</button>
+                        <button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="SearchBin" >Search</button>
                     </div>
                 </div>
             </div>
+            <hr>
         </form>
     </div>
-</div>
+</div> 
+@endisset
 
 @isset($binCard)
 {{-- Bin Card List --}}
@@ -125,6 +134,7 @@
         </div>
         <br>
         <div class="row">
+            {{-- {{$binItems}} --}}
             <table class="table table-condensed table-hover column-bordered-table thead" id="plist">
                 <colgroup>
                     <col width="10%">
@@ -141,6 +151,7 @@
                         <th rowspan="2">Date</th>
                         <th rowspan="2">Receipt/Issue Voucher</th>
                         <th rowspan="2">Receipt from/Issued to</th>
+                        <th rowspan="2">Batch No</th>
                         <th rowspan="2">Expire date</th>
                         <th colspan="3" class="text-center">Quantity</th>
                         <th rowspan="2" class="text-center">signature</th>
@@ -152,6 +163,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($binItems as $item)
+                        <tr>
+                            <td>{{$item->date_created}}</td>
+                            <td>{{$item->voucherNumber}}</td>
+                            <td>{{$item->fromOrTo}}</td>
+                            <td>{{$item->batchNo}}</td>
+                            <td>{{$item->expireDate}}</td>
+                            <td>{{$item->quantityReceived}}</td>
+                            <td>{{$item->quantityIssued}}</td>
+                            <td>{{$item->quantityBalance}}</td>
+                            <td>{{$item->creator}}</td>
+                        </tr>
+                    @endforeach
                 </tbody> 
             </table>
         </div>

@@ -8,10 +8,15 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Purchase;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\DB;
 use App\Models\InventoryStore;
 use Illuminate\Http\Request;
 use App\Notifications\StockAlert;
 use App\Events\ProductReachedLowStock;
+use App\Models\InventoryItemBatch;
+use App\Models\InventorySaleOrderByQuote;
+use App\Models\InventoryStockOnHand;
+use Illuminate\Support\Carbon as SupportCarbon;
 
 class DashboardController extends Controller
 {
@@ -39,13 +44,15 @@ class DashboardController extends Controller
                 ->options([]);
         
                 
-        
-        $total_expired_products = Purchase::whereDate('expiry_date', '=', Carbon::now())->count();
+        // $expireDateEnd=Carbon::now()->addMonths(3);
+        $near_to_expired_products = InventoryItemBatch::whereBetween('expire_date',[ Carbon::now(),Carbon::now()->addMonths(3)])->count();
         $latest_sales = Sales::whereDate('created_at','=',Carbon::now())->get();
-        $today_sales = Sales::whereDate('created_at','=',Carbon::now())->sum('total_price');
+        $today_sales = InventorySaleOrderByQuote::whereBetween('date_created',[ Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->sum('paid_amount');
+        $today_transaction = InventorySaleOrderByQuote::whereBetween('date_created',[ Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->count();
+        $outOfStock=InventoryStockOnHand::where('quantity',0)->count();
         return view('dashboard',compact(
-            'title','pieChart','total_expired_products',
-            'latest_sales','today_sales','total_categories','Stores'
+            'title','pieChart','near_to_expired_products',
+            'latest_sales','today_sales','today_transaction','Stores','outOfStock'
         ));
     }
 }
