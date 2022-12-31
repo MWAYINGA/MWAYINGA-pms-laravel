@@ -20,30 +20,72 @@
 
 @isset($detailedStockStatus)
 {{-- Detailed Stock Status List --}}
+
+@php
+	$items=(!empty($items)) ? json_decode($items) : array();
+@endphp
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
 				<div class="table-responsive">
-					<table id="datatable" class="datatable table table-striped table-bordered table-hover table-center mb-0">
+					<table id="datatable" class="datatable table table-striped table-bordered table-hover table-center mb-0" cellpadding="5">
 						<thead>
 							<tr style="boder:1px solid black;">
-								<th>Item Name</th>
-								<th>UOM</th>
-                                <th>Batch</th>
-                                <th>Quantity</th>
-								<th>Store</th>
+								<td class="border-1 b td-w2" >SN.</td>
+								<td class="border-1 b " >Description</td>
+								<td class="border-1 b " >Unit(s)</td>
+								<td class="border-1 b " >Batch / Serial No.</td>
+								<td class="border-1 b uk-text-center" >Quantity</td>
+								<td class="border-1 b " >Expiry date</td>
 							</tr>
 						</thead>
 						<tbody>
-							@foreach ($stockOnHandByBatch as $status)
+							@php
+								$index=1;
+							@endphp
+							@foreach ($items as $status)
 								<tr>
-									<td class="">{{$status->itemName}}</td>
-									<td class="">{{$status->uOM}}</td>
-                                    <td class="">{{$status->batch}}</td>
-									<td class="">{{$status->quantity}}</td>
-									<td class="">{{$store->name}}</td>
+									<td class="border-1 ">{{$index}}</td>
+									<td class="border-1 ">{{$status->itemName}}</td>
+									<td class="border-1 ">{{$status->units}}</td>
+									<td class="border-1 p-0">
+										<table class="table-center border-colapse mb-0" cellpadding="5">
+											<tbody>
+												@foreach ($status->stocks as $batch)
+													<tr >
+														<td class="border-1">{{$batch->batchNo}}</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</td>
+									<td class="border-1 p-0">
+										<table class="table-center border-colapse tb-w100" cellpadding="5">
+											<tbody>
+												@foreach ($status->stocks as $batch)
+													<tr >
+														<td class="border-1">{{$batch->quantity}}</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</td>
+									<td class="border-1 p-0">
+										<table class="table-center border-colapse tb-w100" cellpadding="5">
+											<tbody>
+												@foreach ($status->stocks as $batch)
+													<tr >
+														<td class="border-1">{{$batch->expireDate}}</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</td>
 								</tr>
+								@php
+								$index++;
+							@endphp
 							@endforeach
 						</tbody>
 					</table>

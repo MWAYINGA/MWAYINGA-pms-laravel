@@ -37,7 +37,6 @@
 						@can('view-outstock-items')<li><a class="{{ Request::routeIs('outstock') ? 'active' : '' }}" href="{{route('outstock')}}">Out-Stock Items</a></li>@endcan
 						@can('view-expired-items')<li><a class="{{ Request::routeIs('expired') ? 'active' : '' }}" href="{{route('expired')}}">Expired Items</a></li>@endcan
 						@can('view-item-price')<li><a class="{{ Request::routeIs('item-price') ? 'active' : '' }}" href="{{route('item-price')}}">Item Prices</a></li>@endcan
-						@can('manage-invoices')<li><a class="{{ Request::routeIs('invoices') ? 'active' : '' }}" href="{{route('invoices')}}">Invoice</a></li>@endcan
 					</ul>
 				</li>
 				@endcan
@@ -58,6 +57,7 @@
 				<li class="submenu">
 					<a href="#"><i class="fe fe-gear"></i> <span> Stock Movements</span> <span class="menu-arrow"></span></a>
 					<ul style="display: none;">
+						@can('manage-invoices')<li><a class="{{ Request::routeIs('invoices') ? 'active' : '' }}" href="{{route('invoices')}}">Invoice</a></li>@endcan
 						@can('manage-stock-requisition')<li><a class="{{ Request::routeIs('requisition') ? 'active' : '' }}" href="{{route('requisition')}}">Requisition</a></li>@endcan
 						@can('manage-stock-issuing')<li class="{{ Request::routeIs('issuing') ? 'active' : '' }}"><a href="{{route('issuing')}}"> <span>Issuing</span></a></li>@endcan
 						@can('view-stocks-binCard')<li><a class="{{ Request::routeIs('binCards') ? 'active' : '' }}" href="{{route('binCards')}}">Bin Card</a></li>@endcan 
@@ -88,6 +88,9 @@
 						@endcan
 						@can('create-purchase')
 						<li><a class="{{ Request::routeIs('pos-orders') ? 'active' : '' }}" href="{{route('pos-orders')}}">Orders</a></li>
+						@endcan
+						@can('pos-creator-reports')
+						<li><a class="{{ Request::routeIs('today-collections') ? 'active' : '' }}" href="{{route('today-collections')}}">Today Collections</a></li>
 						@endcan
 					</ul>
 				</li>

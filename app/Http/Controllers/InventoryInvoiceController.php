@@ -10,6 +10,7 @@ use App\Models\InventoryItemBatch;
 use App\Models\InventoryStockOnHand;
 use App\Models\InventoryStockOnHandByBatch;
 use App\Models\InventoryStore;
+use App\Models\InventoryStoreAttribute;
 use App\Models\InventorySupplier;
 use App\Models\InventoryTransaction;
 use App\Models\InventoryTransactionInvoiceItem;
@@ -86,13 +87,13 @@ class InventoryInvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function createInvoiveNumber(){
-        $invoiceNumber=InventoryInvoiceNumber::where('source',1)->get();
+        $invoiceNumber = InventoryInvoiceNumber::where('source',1)->get();
         if (!$invoiceNumber->isEmpty()) {
             # code...
             $invoiceNumber = $invoiceNumber->last();
             $values = explode("/",$invoiceNumber->value);
             // $values[0]= $values[0] =='INV.'.Carbon::now()->format('Ym') ? $values[0] :
-                if ($values[0] =='INV.'.Carbon::now()->format('ym')) {
+                if ($values[0] == "INV.".Carbon::now()->format('ym')) {
                     # code...
                     if ($values[2] >= 999) {
                         $new_middle_number=sprintf("%'03d", ($values[1]+1));
@@ -107,7 +108,7 @@ class InventoryInvoiceController extends Controller
                     }
                 }else {
                     # code...
-                    $values[0] =='INV.'.Carbon::now()->format('ym');
+                    $values[0] =="INV.".Carbon::now()->format('ym');
                     $new_middle_number=sprintf("%'03d", (1));
                     $new_last_number=sprintf("%'03d", (1));
                     $new_first_string=$values[0];
@@ -117,7 +118,7 @@ class InventoryInvoiceController extends Controller
             # code...
             $new_middle_number=sprintf("%'03d", (1));
             $new_last_number=sprintf("%'03d", (1));
-            $new_first_string='INV.'.Carbon::now()->format('ym');
+            $new_first_string="INV.".Carbon::now()->format('ym');
             $invoice_number=$new_first_string.'/'.$new_middle_number.'/'.$new_last_number;
         }
         
@@ -139,6 +140,15 @@ class InventoryInvoiceController extends Controller
             $qty=$request->qty;
             $uprice=$request->uprice;
             $store = InventoryStore::where('uuid','=',session('storeUuid'))->get()->first();
+            $storeAttributes =InventoryStoreAttribute::where('store',$store->store_id)->where('type',1)->get()->first();
+            if (! $storeAttributes->value) {
+                # code...
+                $notification=array(
+                    'message'=>"Kindly Change Store to Main Store",
+                    'alert-type'=>'danger',
+                );
+                return redirect()->route('invoices')->with($notification);
+            }
             // Auth::InventoryStore()->store_id;
             InventoryInvoice::create([
                 'supplier'=>$supplier,

@@ -562,7 +562,6 @@ class InventorySalesController extends Controller
             );
         } catch (\Throwable $th) {
             //throw $th;
-            //throw $th;
             DB::rollBack();
             $notification=array(
                 'message'=>$th->getMessage(),

@@ -30,6 +30,7 @@ use App\Http\Controllers\CreateSessionController;
 use App\Http\Controllers\InventorySupplierController;
 use App\Http\Controllers\InventoryRequestController;
 use App\Http\Controllers\InventorySalesController;
+use App\Http\Controllers\InventorySalesReportController;
 use App\Http\Controllers\IssuingController;
 use App\Http\Controllers\StocksReportsController;
 use Doctrine\DBAL\Schema\Index;
@@ -148,6 +149,15 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('pos/checkStatus',[InventorySalesController::class,'checkStatus']);
     // Route::delete('sales',[InventorySalesController::class,'destroy']);
 
+    Route::get('reports', [InventorySalesReportController::class,'index'])->name('reports');
+    Route::get('reports/collections', [InventorySalesReportController::class,'todayCollections'])->name('today-collections');
+    Route::get('reports/creator', [InventorySalesReportController::class,'creatorCollections'])->name('creator-collections');
+    Route::post('reports/creator', [InventorySalesReportController::class,'creatorCollectionsSearch']);
+    Route::get('reports/collectors', [InventorySalesReportController::class,'totalSalesCollectionByCollectors'])->name('collectors-collections');
+    Route::post('reports/collectors', [InventorySalesReportController::class,'totalSalesCollectionByCollectorsSearch']);
+    Route::get('reports/salesTransaction', [InventorySalesReportController::class,'totalSalesCollectionPerTransactions'])->name('total-collections-by-transaction');
+    Route::post('reports/salesTransaction', [InventorySalesReportController::class,'totalSalesCollectionPerTransactionsSearch']);
+
     Route::get('itemUnits',[ItemUnitsController::class,'index'])->name('itemUnits');
     Route::get('item-price',[InventoryItemPriceController::class,'index'])->name('item-price');
     Route::post('itemUnits',[ItemUnitsController::class,'store']);
@@ -195,8 +205,8 @@ Route::group(['middleware'=>['auth']],function (){
     Route::get('notification',[NotificationController::class,'markAsRead'])->name('mark-as-read');
     Route::get('notification-read',[NotificationController::class,'read'])->name('read');
 
-    Route::get('reports',[ReportController::class,'index'])->name('reports');
-    Route::post('reports',[ReportController::class,'getData']);
+    // Route::get('reports',[ReportController::class,'index'])->name('reports');
+    // Route::post('reports',[ReportController::class,'getData']);
 
     Route::get('backup',[BackupController::class,'index'])->name('backup-app');
     Route::get('backup-app',[BackupController::class,'database'])->name('backup-db');

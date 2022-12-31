@@ -219,8 +219,8 @@ class StocksReportsController extends Controller
         $title="Detailed Stock Status";
         $detailedStockStatus="detailedStockStatus";
         $users = User::get();
-        $items=InventoryItem::where('voided','=',0)->get();
-        $units=ItemUnits::where('voided','=',0)->get();
+        // $items=InventoryItem::where('voided','=',0)->get();
+        // $units=ItemUnits::where('voided','=',0)->get();
         $store = InventoryStore::where('uuid','=',session('storeUuid'))->get()->first();
         if (InventoryStore::where('uuid','=',session('storeUuid'))->get()->isEmpty()){
             $notification=array(
@@ -229,16 +229,48 @@ class StocksReportsController extends Controller
             );
             return redirect()->route('detailedStockStatus')->with($notification);
         }
+        // $stockOnHandByBatch=DB::table('inventory_stock_on_hand_by_batches as isohb')
+        // ->join('inventory_item_batches as iib','iib.bath_reference_id','isohb.batch')
+        // ->join('inventory_items as ii','ii.inv_item_id','iib.item')
+        // ->join('item_units as iu','iu.unit_id','ii.units')
+        // ->select('isohb.*','ii.name as itemName','iu.name as uOM','iib.batch_no as batch','ii.inv_item_id as itemId')
+        // ->where('isohb.store',$store->store_id)
+        // ->orderBy('ii.inv_item_id','asc')
+        // ->get();
+        $itemList=DB::table('inventory_items as ii')
+        ->join('item_units as iu','iu.unit_id','ii.units')
+        ->join('inventory_item_batches as iib','ii.inv_item_id','iib.item')
+        ->join('inventory_stock_on_hand_by_batches as isohb','iib.bath_reference_id','isohb.batch')
+        ->select('ii.*','iu.name as uOM')
+        ->where('isohb.store',$store->store_id)
+        ->groupBy('ii.inv_item_id')
+        ->get();
         $stockOnHandByBatch=DB::table('inventory_stock_on_hand_by_batches as isohb')
         ->join('inventory_item_batches as iib','iib.bath_reference_id','isohb.batch')
-        ->join('inventory_items as ii','ii.inv_item_id','iib.item')
-        ->join('item_units as iu','iu.unit_id','ii.units')
-        ->select('isohb.*','ii.name as itemName','iu.name as uOM','iib.batch_no as batch','ii.inv_item_id as itemId')
+        ->select('isohb.*','iib.batch_no as batchNo','iib.expire_date as expireDate','iib.item as itemId')
         ->where('isohb.store',$store->store_id)
-        ->orderBy('ii.inv_item_id','asc')
         ->get();
+        // $items[]=[];
+        if (! $itemList->isEmpty()) {
+            # code...
+            foreach ($itemList as $list) {
+                # code...
+                $stock=$stockOnHandByBatch->where('itemId',$list->inv_item_id);
+                $items[]=[
+                    'itemName'=>$list->name,
+                    'sku'=>$list->sku,
+                    'units'=>$list->uOM,
+                    'itemUuid'=>$list->uuid,
+                    'stocks'=>$stock
+                ];
+            }
+            $items=json_encode($items);
+        }else {
+            # code...
+            $items=$itemList;
+        }
         return view('inventory.detailedStockStatus',compact(
-            'stockOnHandByBatch','title','items','units','users','detailedStockStatus','store'
+            'title','items','users','detailedStockStatus','store'
         ));
     }
 }

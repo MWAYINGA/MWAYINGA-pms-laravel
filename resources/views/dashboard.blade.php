@@ -92,7 +92,6 @@
 						</div>
 					</div>
 					<div class="dash-widget-info">
-						
 						<h6 class="text-muted">Out of Stock</h6>
 						<div class="progress progress-sm">
 							<div class="progress-bar bg-warning w-50"></div>
@@ -130,11 +129,9 @@
 												{{AppSettings::get('app_currency', '$')}} {{($sale->total_price)}}
 											</td>
 											<td>{{date_format(date_create($sale->created_at),"d M, Y")}}</td>
-											
 										</tr>
 									@endif
-								@endforeach
-																
+								@endforeach									
 							</tbody>
 						</table>
 					</div>

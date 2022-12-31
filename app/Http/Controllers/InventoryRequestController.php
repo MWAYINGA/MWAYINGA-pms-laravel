@@ -100,7 +100,7 @@ class InventoryRequestController extends Controller
             $requestNumber = $requestNumber->last();
             $values = explode("/",$requestNumber->value);
             // $values[0]= $values[0] =='INV.'.Carbon::now()->format('Ym') ? $values[0] :
-                if ($values[0] =='RQ.'.Carbon::now()->format('ym')) {
+                if ($values[0] =="RQ.".Carbon::now()->format('ym')) {
                     # code...
                     if ($values[2] >= 999) {
                         $new_middle_number=sprintf("%'03d", ($values[1]+1));
@@ -115,7 +115,7 @@ class InventoryRequestController extends Controller
                     }
                 }else {
                     # code...
-                    $values[0] ='RQ.'.Carbon::now()->format('ym');
+                    $values[0] ="RQ.".Carbon::now()->format('ym');
                     $new_middle_number=sprintf("%'03d", (1));
                     $new_last_number=sprintf("%'03d", (1));
                     $new_first_string=$values[0];
@@ -125,7 +125,7 @@ class InventoryRequestController extends Controller
             # code...
             $new_middle_number=sprintf("%'03d", (1));
             $new_last_number=sprintf("%'03d", (1));
-            $new_first_string='RQ.'.Carbon::now()->format('ym');
+            $new_first_string="RQ.".Carbon::now()->format('ym');
             $request_number=$new_first_string.'/'.$new_middle_number.'/'.$new_last_number;
         }
         
