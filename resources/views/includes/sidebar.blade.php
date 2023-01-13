@@ -50,6 +50,7 @@
 						@can('manage-item-categories')<li><a class="{{ Request::routeIs('itemCategory') ? 'active' : '' }}" href="{{route('itemCategory')}}">Item Categories</a></li>@endcan
 						@can('manage-item-price-type')<li><a class="{{ Request::routeIs('priceType') ? 'active' : '' }}" href="{{route('priceType')}}">Price Types</a></li>@endcan
 						@can('manage-supplier')<li><a class="{{ Request::routeIs('supplier') ? 'active' : '' }}" href="{{route('supplier')}}">Suppliers</a></li>@endcan
+						@can('manage-inventory-store')<li><a class="{{ Request::routeIs('adjFactors') ? 'active' : '' }}" href="{{route('adjFactors')}}">Adjustments Factors</a></li>@endcan
 					</ul>
 				</li>
 				@endcan	
@@ -64,6 +65,7 @@
 						@can('view-stocks-ledger')<li><a class="{{ Request::routeIs('ledger') ? 'active' : '' }}" href="{{route('ledger')}}">Ledger</a></li>@endcan
 						@can('manage-item-price-type')<li><a class="{{ Request::routeIs('detailedStockStatus') ? 'active' : '' }}" href="{{route('detailedStockStatus')}}">Detailed Stock Status</a></li>@endcan
 						@can('manage-supplier')<li><a class="{{ Request::routeIs('stockStatus') ? 'active' : '' }}" href="{{route('stockStatus')}}">Stock Status</a></li>@endcan
+						@can('manage-inventory-store')<li><a class="{{ Request::routeIs('adjustments') ? 'active' : '' }}" href="{{route('adjustments')}}">Adjustments</a></li>@endcan
 					</ul>
 				</li>
 				@endcan	

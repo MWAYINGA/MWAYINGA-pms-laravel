@@ -33,6 +33,7 @@ use App\Http\Controllers\InventorySalesController;
 use App\Http\Controllers\InventorySalesReportController;
 use App\Http\Controllers\IssuingController;
 use App\Http\Controllers\StocksReportsController;
+use App\Http\Controllers\InventoryStockAdjustmentsController;
 use Doctrine\DBAL\Schema\Index;
 use GuzzleHttp\Promise\Create;
 
@@ -123,6 +124,14 @@ Route::group(['middleware'=>['auth']],function (){
     Route::get('stores',[InventoryStoreController::class,'index'])->name('stores');
     Route::get('stores/create',[InventoryStoreController::class,'create'])->name('add-store');
     Route::post('stores/create',[InventoryStoreController::class,'store']);
+
+    Route::get('adjustments',[InventoryStockAdjustmentsController::class,'index'])->name('adjustments');
+    Route::get('adjustments/create',[InventoryStockAdjustmentsController::class,'create'])->name('add-adjustments');
+    Route::post('adjustments/create',[InventoryStockAdjustmentsController::class,'store']);
+    Route::post('adjustments/approval',[InventoryStockAdjustmentsController::class,'approval'])->name('adjustment-approval');
+    Route::get('adjustments/factors',[InventoryStockAdjustmentsController::class,'indexAdjFactors'])->name('adjFactors');
+    Route::post('adjustments/factors',[InventoryStockAdjustmentsController::class,'saveAdjFactors']);
+
 
     Route::get('purchases',[PurchaseController::class,'index'])->name('purchases');
     Route::get('add-purchase',[PurchaseController::class,'create'])->name('add-purchase');
