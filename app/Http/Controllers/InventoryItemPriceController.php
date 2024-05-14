@@ -20,17 +20,37 @@ class InventoryItemPriceController extends Controller
     public function index()
     {
         //
-        $tittle= "Item Price List";
+        $title= "Item Price List";
         $inventoryItemPrices = InventoryItemPrice::where('voided','=',0)->get();
-        $priceTemplate = DB::table('inventory_items')
-        ->leftjoin('inventory_item_prices', 'inventory_item_prices.item', '=', 'inventory_items.inv_item_id')
-        ->leftJoin('item_price_types','item_price_types.price_type_id','inventory_item_prices.price_type')
+        $priceTemplate = DB::table('item_price_types')
+        ->leftJoin('inventory_item_prices','item_price_types.price_type_id','inventory_item_prices.price_type')
+        ->leftjoin('inventory_items', 'inventory_item_prices.item', '=', 'inventory_items.inv_item_id')
         ->select('inventory_items.uuid as uuid','inventory_items.inv_item_id as itemID','inventory_items.name as itemName', 'inventory_item_prices.price as price','item_price_types.name as price_type')
         ->get();
         $users = User::get();
         $units = ItemUnits::with('user')->where('voided','=',0)->get();
+
+        // $pivotData=DB::select('
+        //     SELECT * FROM 
+        //         (
+        //         SELECT ipt.price_type_id,ipt.name,iip.item,iip.price, values FROM  item_price_types as ipt
+        //         LEFT JOIN pharmacymslm.inventory_item_prices as iip  on iip.price_type=ipt.price_type_id
+        //         ) as  source_table 
+        //         pivot
+        //         (
+        //         MAX(values) FOR ipt.name IN ("Normal Sales")
+        //         ) as pivot_table
+        //         ');
+        $columns = DB::select("SELECT name FROM item_price_types");
+        $columns = collect($columns)->pluck('name')->toArray();
+
+        $pivotQuery = "SELECT * FROM (SELECT ipt.price_type_id, ipt.name, iip.item, iip.price,values FROM item_price_types ipt LEFT JOIN inventory_item_prices iip on iip.price_type=ipt.price_type_id) AS source_table";
+        $pivotQuery .= " PIVOT (MAX(values) FOR ipt.name IN (" . implode(", ", array_map(function($col) { return "'$col'"; }, $columns)) . ")) AS pivot_table";
+
+        $pivotData = DB::select($pivotQuery);
+        $pivotData = collect($pivotData);
         return view('inventory.price-list-items',compact(
-            'inventoryItemPrices','units','users','priceTemplate','tittle',
+            'inventoryItemPrices','units','users','priceTemplate','title','pivotData',
         ));
     }
 

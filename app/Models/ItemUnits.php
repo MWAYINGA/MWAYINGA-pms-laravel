@@ -30,4 +30,15 @@ class ItemUnits extends Model
     public function voided_by(){
         return $this->belongsTo(User::class,'item_units','voided_by');
     }
+
+    /**
+     * Get the items that owns the unit of measures
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class, 'units', 'unit_id');
+    }
+
 }

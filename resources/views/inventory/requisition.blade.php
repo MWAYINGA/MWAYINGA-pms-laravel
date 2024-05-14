@@ -69,9 +69,9 @@
 										{{$status}}
 										</td>
 								</tr>
-								<tr>
-									<td colspan="9" class="hiddenRow">
-										<div class="accordian-body collapse" id="demo{{$request->request_id}}">
+								<tr  class="hiddenRow accordian-body collapse" id="demo{{$request->request_id}}">
+									<td colspan="9">
+										<div class="">
 											<table class="table table-striped" id="list">
 												<form action="{{route('requisition-approval')}}" method="post" enctype="multipart/form-data">
 													@csrf
@@ -99,9 +99,9 @@
 																	@endif>{{ ($qtyIssued > 0) ? $qtyIssued : '-'}}</td>
 																	<td>{{ ($qtyIssued > 0) ? $status : 'Requested'}}</td>
 																</tr>
-																<tr>
-																	<td colspan="9" class="hiddenRow">
-																		<div class="accordian-body collapse" id="issue{{$item->request_item_id}}">
+																<tr  class="hiddenRow accordian-body collapse" id="issue{{$item->request_item_id}}">
+																	<td colspan="9">
+																		<div class="">
 																			<input type="radio" name="approval[{{$item->request_item_id}}]" value="Accepted" id="Accepted" required>Accepted
 																			<input type="radio" name="approval[{{$item->request_item_id}}]" value="Rejected"  id="Rejected">Rejected
 																		</div>

@@ -54,6 +54,8 @@ Route::group(['middleware'=>['guest']],function (){
     Route::post('login',[LoginController::class,'login']);
     Route::get('register',[RegisterController::class,'index'])->name('register');
     Route::post('register',[RegisterController::class,'store']); 
+    
+    // Route::get('sales/trySendMpes',[SalesController::class,'trySendMpes']);
 
    
 
@@ -126,11 +128,14 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('stores/create',[InventoryStoreController::class,'store']);
 
     Route::get('adjustments',[InventoryStockAdjustmentsController::class,'index'])->name('adjustments');
+    Route::post('itemBatches',[InventoryStockAdjustmentsController::class,'itemBatches'])->name('itemBatches');
     Route::get('adjustments/create',[InventoryStockAdjustmentsController::class,'create'])->name('add-adjustments');
     Route::post('adjustments/create',[InventoryStockAdjustmentsController::class,'store']);
-    Route::post('adjustments/approval',[InventoryStockAdjustmentsController::class,'approval'])->name('adjustment-approval');
+    Route::post('adjustments/approve',[InventoryStockAdjustmentsController::class,'approve'])->name('adjustment-approve');
+    Route::post('adjustments/reject',[InventoryStockAdjustmentsController::class,'reject'])->name('adjustment-reject');
     Route::get('adjustments/factors',[InventoryStockAdjustmentsController::class,'indexAdjFactors'])->name('adjFactors');
     Route::post('adjustments/factors',[InventoryStockAdjustmentsController::class,'saveAdjFactors']);
+    Route::post('adjustments/factorsType',[InventoryStockAdjustmentsController::class,'TypeFactors'])->name('adjustment-factors');
 
 
     Route::get('purchases',[PurchaseController::class,'index'])->name('purchases');
@@ -144,10 +149,11 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('sales',[SalesController::class,'store']);
     Route::put('sales',[SalesController::class,'update']);
     Route::delete('sales',[SalesController::class,'destroy']);
+    Route::get('sales/trySendMpes',[SalesController::class,'trySendMpes'])->name('sendViaMpesa');
 
     Route::get('pos',[InventorySalesController::class,'index'])->name('pos-normal');
     Route::post('pos',[InventorySalesController::class,'store']);
-    Route::post('pos',[InventorySalesController::class,'singlePos'])->name('pos-normal-solo');
+    // Route::post('pos',[InventorySalesController::class,'singlePos'])->name('pos-normal-solo');
     Route::get('pos/quotations',[InventorySalesController::class,'quotations'])->name('pos-quotations');
     Route::post('pos/quotations',[InventorySalesController::class,'saveQuotations']);
     Route::get('pos/orders',[InventorySalesController::class,'orders'])->name('pos-orders');

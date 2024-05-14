@@ -121,8 +121,8 @@
 					</div>
 					<div class="service-fields">
 						<div class="row">
-							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processRequest">Process Request</button>
+							<div class="submit-section col-sm-12 col-auto">
+								<button class="btn btn-primary submit-btn float-right" type="submit" name="form_submit" value="submit" id="processRequest">Process Request</button>
 							</div>
 						</div>
 					</div>
@@ -208,8 +208,8 @@
 					</div>
 					<div class="service-fields">
 						<div class="row">
-							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processRequest">Process Request</button>
+							<div class="submit-section col-sm-12 col-auto">
+								<button class="btn btn-primary submit-btn float-right" type="submit" name="form_submit" value="submit" id="processRequest">Process Request</button>
 							</div>
 						</div>
 					</div>

@@ -71,9 +71,8 @@
 										{{$status}}
 									</td>
 								</tr>
-								<tr>
-									<td colspan="9" class="hiddenRow">
-										<div class="accordian-body collapse" id="demo{{$request->request_id}}">
+								<tr class="hiddenRow accordian-body collapse" id="demo{{$request->request_id}}">
+									<td colspan="9">
 											<table class="table table-striped" id="list">
 												<form action="{{route('issuing')}}" method="post" enctype="multipart/form-data" id="request{{$request->request_id}}">
 													@csrf
@@ -105,9 +104,9 @@
 																		{{ ($qtyIssued > 0) ? $status : 'New'}}
 																	</td>
 																</tr>
-																<tr>
-																	<td colspan="9" class="hiddenRow">
-																		<div class="accordian-body collapse" id="issue{{$item->request_item_id}}">
+																<tr class="hiddenRow accordian-body collapse" id="issue{{$item->request_item_id}}">
+																	<td colspan="9">
+																		<div class="">
 																			@if ($onHandItemBatch->where('item',$item->itemId)->isEmpty())
 																				{{"No available Batches"}}
 																			@else
@@ -144,7 +143,6 @@
 													</tbody>
 												</form>
 											</table>
-										</div>
 									</td>
 								</tr>
 								@php

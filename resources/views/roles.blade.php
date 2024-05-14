@@ -40,9 +40,9 @@
 								<td>
 									{{$role->name}}
 								</td>
-								<td>
+								<td class="text-center text-wrap">
 									@foreach ($role->getAllPermissions() as $permission)
-									<span>{{ $permission->name }}</span>
+									<span style="padding-right:1px;padding-left:1px; border-right:2px solid grey">{{ $permission->name }}</span>
 									@endforeach
 								</td>
 

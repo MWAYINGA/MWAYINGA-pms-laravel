@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\InventoryCustomer;
 use App\Models\InventoryDispensingOrder;
 use Illuminate\Http\Request;
@@ -45,14 +44,15 @@ class InventorySalesController extends Controller
         $createNormalSales="createNormalSales";
         $title="Normal Sales";
         $users = User::get();
-        $items=InventoryItem::where('voided','=',0)->get();
+        $items=InventoryItem::with('uoms')->where('voided','=',0)->get();
         $units=ItemUnits::where('voided','=',0)->get();
         
         // return view('inventory.pos',compact(
         //     'createNormalSales','title','items','units','users'
         // ));
+        $lastTransaction = InventorySaleOrderByQuote::get();
         return view('inventory.singlePos',compact(
-            'createNormalSales','title','items','units','users'
+            'createNormalSales','title','items','units','users','lastTransaction'
         ));
     }
 
@@ -70,7 +70,7 @@ class InventorySalesController extends Controller
         $users = User::get();
         $keyword="Insurance";
         $insuranceType=ItemPriceType::where('name','LIKE','%'.$keyword.'%')->get();
-        $items=InventoryItem::where('voided','=',0)->get();
+        $items=InventoryItem::with('uoms')->where('voided','=',0)->get();
         $units=ItemUnits::where('voided','=',0)->get();
         return view('inventory.pos',compact(
             'createInsuranceSales','title','items','units','users','insuranceType'
@@ -131,6 +131,7 @@ class InventorySalesController extends Controller
         ->join('inventory_customers as ic','ic.customer_id','isq.customer')
         ->join('inventory_sale_statuses as iss','iss.status_id','isq.status')
         ->select('isq.*','ic.full_name as customerName','iss.name as quoteStatus')
+        ->orderBy('isq.quote_id','desc')
         ->get();
         $quoteStatuses=InventorySaleStatus::get();
         // $quotationLines=InventorySaleQuoteLine::get();
@@ -183,6 +184,7 @@ class InventorySalesController extends Controller
         ->join('inventory_customers as ic','ic.customer_id','isq.customer')
         ->join('inventory_sale_statuses as iss','iss.status_id','isq.status')
         ->select('isoq.*','ic.full_name as customerName','iss.name as quoteStatus')
+        ->orderBy('isoq.soq_no','desc')
         ->get();
         // $quotationOrderLines=InventorySaleOrderByQuoteLine::get();
         $orderLines=DB::table('inventory_sale_order_by_quote_lines as isoql')
@@ -468,8 +470,7 @@ class InventorySalesController extends Controller
             $price=$request->price;
             $amount=$request->amount;
             $insuranceType=$request->insuranceType;
-            $Store = InventoryStore::where('uuid','=',session('storeUuid'))->get()->first();
-    
+            $Store = InventoryStore::where('uuid','=',session('storeUuid'))->get()->first();  
             if ($sessionType == "createNormalSales") {
                 # code...
                 $customerUuid=(string)Str::uuid();
@@ -554,10 +555,16 @@ class InventorySalesController extends Controller
                         'reference_type'=>'DISPENSING_ORDER'
                     ]);
                 }
+                $savedQuotations = json_encode(array("quote"=>$quote, "quoteLine"=>InventorySaleQuoteLine::where('quote',$quote)->get()));
+                $saved = $this->saveOrders($savedQuotations);
             }
+            // $savedQuotations= array(
+            //     'quote'=>$quote,
+            //     'quoteLine'=>InventorySaleQuoteLine::where('quote',$quote)->get()
+            // );
             DB::commit();
             $notification=array(
-                'message'=>"Saved Successfully with STN. ".$quote,
+                'message'=>"Saved Successfully with STN. ".$saved,
                 'alert-type'=>'success',
             );
         } catch (\Throwable $th) {
@@ -582,7 +589,7 @@ class InventorySalesController extends Controller
      */
     public function saveQuotations(Request $request)
     {
-        //saveQuotations saveOrders
+        //saveQuotations
         try {
             //code...
             $quote_id=$request->quote;
@@ -639,16 +646,66 @@ class InventorySalesController extends Controller
     }
 
         
-        /**
+    /**
      * Store a newly created resource in storage.
      * Save Sales Orders
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  $quotations
      * @return \Illuminate\Http\Response
      */
-    public function saveOrders(Request $request)
+    public function saveOrders($quotations)
     {
         //saveOrders
+        try {
+            //code...
+            $quote_id=json_decode($quotations)->quote;
+            $quoteLines=json_decode($quotations)->quoteLine;
+            $uuidSaleOrder=(string)Str::uuid();
+            $dated_sale_id=$this->createDatedSaleId();
+            $quote = InventorySaleQuote::where('quote_id',$quote_id)->get()->first();
+            InventorySaleOrderByQuote::create([
+                'dated_sale_id'=>$dated_sale_id,
+                'sale_quote'=>$quote->quote_id,
+                'payable_amount'=>$quote->payable_amount,
+                'payment_category'=>1,
+                'paid_amount'=>0,
+                'debt_amount'=>$quote->payable_amount,
+                'created_by'=>Auth::user()->id,
+                'uuid'=>$uuidSaleOrder
+            ]);
+            $saleOrder=InventorySaleOrderByQuote::where('uuid',$uuidSaleOrder)->get()->first();
+            foreach ($quoteLines as $k => $v){
+                $quoteLine=InventorySaleQuoteLine::where('quote',$quote->quote_id)->where('quote_line_id',$quoteLines[$k]->quote_line_id)->get()->first();
+                InventorySaleQuoteLine::where('quote',$quote->quote_id)->where('quote_line_id',$quoteLines[$k]->quote_line_id)->update([
+                    'status'=>6
+                ]);
+                InventorySaleOrderByQuoteLine::create([
+                    'sale_order_quote'=>$saleOrder->soq_no,
+                    'quote_line'=>$quoteLine->quote_line_id,
+                    'paid_amount'=>0,
+                    'debt_amount'=>$quoteLine->payable_amount,
+                    'uuid'=>(string)Str::uuid()
+                ]);
+            }
+            $totalLines=InventorySaleQuoteLine::where('quote',$quote->quote_id)->get()->count('quote_line_id');
+            $confirmedLines=InventorySaleQuoteLine::where('quote',$quote->quote_id)->where('status',6)->get()->count('quote_line_id');
+            $status = ($totalLines == $confirmedLines) ? 3 : 2 ;
+                InventorySaleQuote::where('quote_id',$quote_id)->update([
+                    'status'=>$status
+                ]);            
+            $notification=array(
+                'message'=>"Saved Successfully with Date id:  ".$dated_sale_id,
+                'alert-type'=>'success',
+            );
+            
+        return $dated_sale_id;
+        } catch (\Throwable $th) {
+            $notification=array(
+                'message'=>$th->getMessage(),
+                'alert-type'=>'danger',
+            );
+            return $notification;
+        }
 
     }
 
@@ -803,7 +860,7 @@ class InventorySalesController extends Controller
         if (!$datedSaleId->isEmpty()) {
             # code...
             $saleNumber = $datedSaleId->last();
-            $values = explode("-",$saleNumber->value);
+            $values = explode("-",$saleNumber->dated_sale_id);
             // $values[0]= $values[0] =='INV.'.Carbon::now()->format('Ym') ? $values[0] :
                 if ($values[0] ==Carbon::now()->format('ymd')) {
                     # code...

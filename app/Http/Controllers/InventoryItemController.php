@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use App\Models\ItemUnits;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Rfc4122\UuidV4;
 use Ramsey\Uuid\Uuid;
@@ -119,18 +120,60 @@ class InventoryItemController extends Controller
         ));
     }
 
+
+    /**
+     * Display the specified resource.
+     *
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function outstock(){
         //
-        $title = "Item List";
+        $title = "Out Of Stock";
         $users = User::get();
         $units = ItemUnits::where('voided','=',0)->get();
         $categories = ItemCategory::where('voided','=',0)->get();
         $groups = ItemGroup::where('voided','=',0)->get();
         $items = InventoryItem::where('voided','=',0)->get();
-        return view('inventory.out-stock-items',compact(
-            'title','users','units',
-        ));
 
+        $outOfStock=DB::table('inventory_stock_on_hands as isoh')
+        ->join('inventory_items as ii','ii.inv_item_id','isoh.item')
+        ->join('item_units as iu','iu.unit_id','ii.units')
+        ->Join('inventory_stores as iss', 'iss.store_id', 'isoh.store')
+        ->select('isoh.*','ii.name as itemName','iu.name as uOM','iss.name as storeName')
+        ->where('isoh.quantity',0)
+        ->get();
+        return view('inventory.out-stock-items',compact(
+            'title','users','units','outOfStock'
+        ));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function expired(){
+        //
+        $title = "Expired Item Batches";
+        $users = User::get();
+        $units = ItemUnits::where('voided','=',0)->get();
+        $categories = ItemCategory::where('voided','=',0)->get();
+        $groups = ItemGroup::where('voided','=',0)->get();
+        $items = InventoryItem::where('voided','=',0)->get();
+
+        $expiredBatches = DB::table('inventory_item_batches as iib')
+        ->join('inventory_items as ii','ii.inv_item_id','iib.item')
+        ->join('inventory_stock_on_hand_by_batches as ishb', 'ishb.batch','iib.bath_reference_id')
+        ->join('inventory_stores as iss','iss.store_id','ishb.store')
+        ->select('ishb.*','iib.batch_no as batchNo','ii.name as itemName','iib.expire_date as expireDate','iib.bath_reference_id as batchId','iss.name as storeName')
+        ->where('iib.voided',0)
+        ->whereBetween('iib.expire_date',[Carbon::now(),Carbon::now()->addMonths(2)])
+        ->get();
+        return view('inventory.expired-items',compact(
+            'title','users','units','expiredBatches'
+        ));
     }
     /**
      * Show the form for editing the specified resource.

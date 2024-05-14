@@ -9,6 +9,7 @@ class InventoryTransactionAdjustment extends Model
 {
     use HasFactory;
     protected $fillable =[
+        'transaction',
         'adjustment_batch',
         'created_by',
         'uuid'

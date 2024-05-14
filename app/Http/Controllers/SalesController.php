@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use DataTables;
 use App\Models\Sales;
 use App\Models\Product;
@@ -9,6 +8,9 @@ use App\Models\Purchase;
 use Illuminate\Http\Request;
 use App\Events\PurchaseOutStock;
 use App\Notifications\StockAlert;
+use Alphaolomi\Azampay\AzampayService;
+use Openpesa\Pesa;
+use Illuminate\Support\Facades\Log;
 
 class SalesController extends Controller
 {
@@ -174,4 +176,26 @@ class SalesController extends Controller
         );
         return back()->with($notification);
     }
+
+
+    public function trySendMpes(){
+        $azampay = new AzampayService();
+        $data = $azampay->mobileCheckout([
+            'amount' => 1000,
+            'currency' => 'TZS',
+            'accountNumber' => '0753553555',
+            'externalId' => '08012345678',
+            'provider' => 'Mpesa',
+        ]);
+        Log::info('Logging a value:', ['value' => $valueToLog]);
+        $title = "sales";
+        $products = Product::get();
+        $sales = Sales::with('product')->latest()->get();
+                
+        return view('sales',compact(
+            'data','products','sales'
+        ));
+        // return back()->with($data);
+    }
+    
 }

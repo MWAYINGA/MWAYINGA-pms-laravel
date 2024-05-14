@@ -68,7 +68,7 @@
 @isset($binCard)
 {{-- Bin Card List --}}
 <div class="row">
-	<div class="col-lg-12">
+	<div class="col-lg-12 col-auto">
 		<div class="row">
             <div class="col-md-3" style="float: left;">
 				<img src="assets/img/1600415460_avatar2.jpg" alt="" height="90px" width="90px" srcset="" class="rounded-circle">

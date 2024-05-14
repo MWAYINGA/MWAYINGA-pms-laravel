@@ -10,7 +10,7 @@
 	<h3 class="page-title">Item Units</h3>
 	<ul class="breadcrumb">
 		<li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-		<li class="breadcrumb-item active">{{$tittle}}</li>
+		<li class="breadcrumb-item active">{{$title}}</li>
 	</ul>
 </div>
 <div class="col-sm-5 col">
@@ -26,7 +26,8 @@
 		<div class="card">
 			<div class="card-body">
 				<div class="table-responsive">
-					{{$priceTemplate}}
+					{{-- {{$priceTemplate}} --}}
+					{{$pivotData}}
 					<table id="item-unit-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>
 							<tr style="boder:1px solid black;">

@@ -11,13 +11,13 @@
 					<a href="{{route('dashboard')}}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
 				</li>
 				
-				@can('view-category')
+				{{-- @can('view-category')
 				<li class="{{ Request::routeIs('categories') ? 'active' : '' }}"> 
 					<a href="{{route('categories')}}"><i class="fe fe-layout"></i> <span>Categories</span></a>
 				</li>
-				@endcan
+				@endcan --}}
 				
-				@can('view-products')
+				{{-- @can('view-products')
 				<li class="submenu">
 					<a href="#"><i class="fe fe-document"></i> <span> Products</span> <span class="menu-arrow"></span></a>
 					<ul style="display: none;">
@@ -27,7 +27,7 @@
 						@can('view-expired-products')<li><a class="{{ Request::routeIs('expired') ? 'active' : '' }}" href="{{route('expired')}}">Expired</a></li>@endcan
 					</ul>
 				</li>
-				@endcan
+				@endcan --}}
 				@can('view-items')
 				<li class="submenu">
 					<a href="#"><i class="fe fe-document"></i> <span> Items</span> <span class="menu-arrow"></span></a>
@@ -69,17 +69,19 @@
 					</ul>
 				</li>
 				@endcan	
-				@can('view-purchase')
+				{{-- @can('view-expenses')
 				<li class="submenu">
-					<a href="#"><i class="fe fe-star-o"></i> <span> Purchase</span> <span class="menu-arrow"></span></a>
+					<a href="#"><i class="fe fe-star-o"></i> <span> Expenses</span> <span class="menu-arrow"></span></a>
 					<ul style="display: none;">
-						<li><a class="{{ Request::routeIs('purchases') ? 'active' : '' }}" href="{{route('purchases')}}">Purchase</a></li>
-						@can('create-purchase')
-						<li><a class="{{ Request::routeIs('add-purchase') ? 'active' : '' }}" href="{{route('add-purchase')}}">Add Purchase</a></li>
+						@can('create-stock-consumption')
+							<li><a class="{{ Request::routeIs('consumption') ? 'active' : '' }}" href="{{route('consumption')}}">Stock Consumption</a></li>
+						@endcan
+						@can('create-money-expenses')
+							<li><a class="{{ Request::routeIs('money-expenses') ? 'active' : '' }}" href="{{route('money-expenses')}}">Money Expenses</a></li>
 						@endcan
 					</ul>
 				</li>
-				@endcan
+				@endcan --}}
 				@can('view-pos')
 				<li class="submenu">
 					<a href="#"><i class="fe fe-star-o"></i> <span> Point Of Sales</span> <span class="menu-arrow"></span></a>
@@ -97,10 +99,10 @@
 					</ul>
 				</li>
 				@endcan
-				@can('view-sales')
+				{{-- @can('view-sales')
 				<li><a class="{{ Request::routeIs('sales') ? 'active' : '' }}" href="{{route('sales')}}"><i class="fe fe-activity"></i> <span>Sales</span></a></li>
-				@endcan
-				@can('view-supplier')
+				@endcan --}}
+				{{-- @can('view-supplier')
 				<li class="submenu">
 					<a href="#"><i class="fe fe-user"></i> <span> Supplier</span> <span class="menu-arrow"></span></a>
 					<ul style="display: none;">
@@ -108,7 +110,7 @@
 						@can('create-supplier')<li><a class="{{ Request::routeIs('add-supplier') ? 'active' : '' }}" href="{{route('add-supplier')}}">Add Supplier</a></li>@endcan
 					</ul>
 				</li>
-				@endcan
+				@endcan --}}
 
 				@can('view-reports')
 				<li class="submenu">

@@ -21,7 +21,7 @@ class CreateInventoryAdjustmentsTable extends Migration
             $table->foreignId('approved_by')->nullable(true)->constrained('fk_inventory_adjustments_approved_by')
             ->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('date_approved')->nullable(true);
-            $table->string('approced_remarks')->nullable();
+            $table->string('approved_remarks')->nullable();
             $table->boolean('rejected')->default(0);
             $table->foreignId('rejected_by')->nullable(true)->constrained('fk_inventory_adjustments_rejected_by')
             ->references('id')->on('users')->onDelete('cascade');

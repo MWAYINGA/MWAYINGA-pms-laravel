@@ -85,7 +85,7 @@
 							</div>
 						</div>
                         <div class="col-lg-3">
-							<div class="form-group">
+							<div class="form-group mt-5 ml-5">
                                 <input class="form-check-input " type="checkbox" value="1" id="prescription" name="prescription" >
                                 <label class="form-check-label" for="prescription">
                                     Require Prescription
@@ -97,7 +97,7 @@
 				</div>
 				
 				
-				<div class="submit-section">
+				<div class="submit-section float-right">
 					<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit">Submit</button>
 				</div>
 			</form>

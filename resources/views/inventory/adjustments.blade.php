@@ -7,10 +7,10 @@
 
 @push('page-header')
 <div class="col-sm-7 col-auto">
-	<h3 class="page-title">{{$tittle}}</h3>
+	<h3 class="page-title">{{$title}}</h3>
 	<ul class="breadcrumb">
 		<li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-		<li class="breadcrumb-item active">{{$tittle}}</li>
+		<li class="breadcrumb-item active">{{$title}}</li>
 	</ul>
 </div>
 <div class="col-sm-5 col">
@@ -33,6 +33,15 @@
 			<div class="card-body">
 				<div class="table-responsive">
 					<table id="item-list-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
+						<colgroup>
+							<col width="5%">
+							<col width="5%">
+							<col width="20%">
+							<col width="20%">
+							<col width="20%">
+							<col width="20%">
+							<col width="10%">
+						</colgroup>
 						<thead>
 							<tr style="boder:1px solid black;">
 								<th></th>
@@ -45,81 +54,93 @@
 							</tr>
 						</thead>
 						<tbody>
-							{{-- @php
+							@php
 								$index=1;
 							@endphp
-							@foreach ($requests as $request)
+							@foreach ($adjustments as $adj)
 								<tr>
 									<td>
-									<a class="" data-toggle="collapse" data-target="#demo{{$request->request_id}}" class="accordion-toggle"><span class='icon-field'><i class="fa fa-eye"></i></span></a>
+										<a class="" data-toggle="collapse" data-target="#demo{{$adj->adjustment_id}}" class="accordion-toggle"><span class='icon-field'><i class="fa fa-eye"></i></span></a>
 									</td>
 									<td class="">{{$index}}</td>
-									<td class="">{{$request->requestNumber}}</td>
-									<td class="">{{$request->storeName}}</td>
-									<td class="">{{$request->date_created}}</td>
+									<td class="">{{$adj->adjustmentNumber}}</td>
+									<td class="">{{$adj->storeName}}</td>
+									<td class="">{{$adj->date_created}}</td>
 									<td class="">
 										@foreach($users as $userss)
-										@if($request->created_by == $userss->id){{$userss->name }} @endif
-										@endforeach</td>
-									<td class="">
-										{{$status}}
-										</td>
+										@if($adj->created_by == $userss->id){{$userss->name }} @endif
+										@endforeach
+									</td>
+									<td class="">{{  ($adj->approved ==1) ? "Completed" : "New" }}</td>
 								</tr>
 								<tr>
-									<td colspan="9" class="hiddenRow">
-										<div class="accordian-body collapse" id="demo{{$request->request_id}}">
-											<table class="table table-striped" id="list">
-												<form action="{{route('adjustment-approval')}}" method="post" enctype="multipart/form-data">
-													@csrf
-													<thead>
+									<td colspan="7" class="hiddenRow">
+										<div class="accordian-body collapse table-responsive" id="demo{{$adj->adjustment_id}}">
+											<table class="" id="list" style="width: 100%; table-layout:auto">
+												<colgroup>
+													<col width="25%">
+													<col width="5%">
+													<col width="5%">
+													<col width="15%">
+													<col width="15%">
+													<col width="5%">
+													<col width="10%">
+												</colgroup>
+												<thead>
+													<tr>
+														<th>Description</th>
+														<th>Batch/Serial no.</th>
+														<th>Reconciled Qty</th>
+														<th>Factor</th>
+														<th>Remark</th>
+														<th>Date Approved</th>
+														<th>Approved By</th>
+													</tr>
+												</thead>
+												<tbody>
+													@foreach ($adjustmentBatches as $batch)
+														@if ($batch->adjustment == $adj->adjustment_id)
+															<tr>
+																<td>{{$batch->itemName}}</td>
+																<td>{{$batch->batchNo}}</td>
+																<td>{{$batch->quantity}}</td>
+																<td>{{$batch->factorName}}</td>
+																<td>{{$batch->remarks}}</td>
+																<td>{{$adj->date_approved}}</td>
+																<td>
+																	@foreach($users as $userss)
+																	@if($adj->approved_by == $userss->id){{$userss->name }} @endif
+																	@endforeach
+																</td>
+															</tr>
+														@endif
+													@endforeach
+												</tbody>
+												<tfoot>
+													@if ($adj->approved ==0)
 														<tr>
-															<th>Description</th>
-															<th>Batch</th>
-															<th>Current Stock</th>
-															<th>Physical Stock</th>
-                                                            <th>Difference</th>
-															<th>Factor</th>
-                                                            <th>Remark</th>
-														</tr>
-													</thead>
-													<tbody>
-														@foreach ($requestItems as $item)
-															@if ($item->request == $request->request_id)
-															@php
-																$qtyIssued= $requestStatus->where('requestItem',$item->request_item_id)->sum('batchQuantity')
-															@endphp
-																<tr>
-																	<td>{{$item->itemName}}</td>
-																	<td>{{$item->uOM}}</td>
-																	<td>{{$item->quantity}}</td>
-																	<td @if ($qtyIssued > 0)
-																	data-toggle="collapse" data-target="#issue{{$item->request_item_id}}" class="accordion-toggle"
-																	@endif>{{ ($qtyIssued > 0) ? $qtyIssued : '-'}}</td>
-																	<td>{{ ($qtyIssued > 0) ? $status : 'Requested'}}</td>
-																</tr>
-																<tr>
-																	<td colspan="9" class="hiddenRow">
-																		<div class="accordian-body collapse" id="issue{{$item->request_item_id}}">
-																			<input type="radio" name="approval[{{$item->request_item_id}}]" value="Accepted" id="Accepted" required>Accepted
-																			<input type="radio" name="approval[{{$item->request_item_id}}]" value="Rejected"  id="Rejected">Rejected
-																		</div>
-																	</td>
-																</tr>
-															@endif
-														@endforeach
-													</tbody>
-													@if ($status == "Issued")
-													<tfoot>
-														<tr>
-															<td colspan="5">
-																<div class="">
-																	<button class="btn btn-secondary submit-btn" type="submit" name="form_submit" value="Submit" id="issueB{{$item->request}}">Submit</button>
-																</div>
+															<td colspan="5"></td>
+															<td>
+																<form action="{{route('adjustment-approve')}}" enctype="multipart/form-data" id="update_adjustments{{$adj->adjustment_id}}" method="post">
+																	@csrf
+																	<input type="hidden" name="adjustmentId" value="{{$adj->adjustment_id}}">
+																	<div class="submit-section">
+																		<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="ApproveReconsiliation">Approve</button>
+																	</div>
+																</form>
+															</td>
+															<td>
+																<form action="{{route('adjustment-reject')}}" enctype="multipart/form-data" id="reject_adjustments{{$adj->adjustment_id}}" method="post">
+																	@csrf
+																	<input type="hidden" name="adjustmentId" value="{{$adj->adjustment_id}}">
+																	<div class="submit-section">
+																		<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="RejectReconsiliation">Reject</button>
+																	</div>
+																</form>
 															</td>
 														</tr>
-													</tfoot>
 													@endif
-												</form>
+												</tfoot>
 											</table>
 										</div>
 									</td>
@@ -127,7 +148,7 @@
 								@php
 									$index++;
 								@endphp
-							@endforeach --}}
+							@endforeach
 						</tbody>
 					</table>
 				</div>
@@ -144,14 +165,14 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
-				<form method="post" enctype="multipart/form-data" id="update_service__" action="{{route('new-request')}}">
+				<form method="post" enctype="multipart/form-data" id="create_adjustments" action="{{route('add-adjustments')}}">
 					@csrf
 					<div class="service-fields">
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-group">
-									<label>Custom Request Number </label>
-									<input class="form-control" type="text" name="requestNumber">
+									<label>Custom Adjustments Number </label>
+									<input class="form-control" type="text" name="adjustmentsNumber">
 								</div>
 							</div>
 						</div>
@@ -169,14 +190,11 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-md-2">
+							<div class="col-md-1">
 								<div class="form-group">
 									<label>Batch </label>
 									<select class="select2 form-select form-control" id="batch">
 										<option value="">select Batch / Serial No</option> 
-										{{-- @foreach ($units as $unit)
-											<option value="{{$unit->unit_id}}" data-uom_id="{{$unit->unit_id}}" data-uom_name="{{$unit->name}}">{{$unit->name}}</option>
-										@endforeach --}}
 									</select>
 								</div>
 							</div>
@@ -194,12 +212,9 @@
 							</div>
                             <div class="col-md-2">
 								<div class="form-group">
-									{{-- <label>Physical Count</label> --}}
+									<label>Factor</label>
                                     <select class="select2 form-select form-control" id="factor" aria-placeholder="Select Factor">
-										<option value="">select Batch / Serial No</option> 
-										{{-- @foreach ($units as $unit)
-											<option value="{{$unit->unit_id}}" data-uom_id="{{$unit->unit_id}}" data-uom_name="{{$unit->name}}">{{$unit->name}}</option>
-										@endforeach --}}
+										<option value="">select Factor</option> 
 									</select>
 								</div>
 							</div>
@@ -211,9 +226,10 @@
 							</div>
                             <div class="col-md-1">
 								<div class="form-group">
-									<a href="javascript:void(0)" class="btn btn-primary float-right mt-2" id="add-to-list">Add Item</a>
+									<a href="javascript:void(0)" class="btn btn-primary float-right mt-2" id="add-to-list">Add</a>
 								</div>
 							</div>
+							{{csrf_field()}}
 						</div>
 					</div>
 					<div class="service-fileds">
@@ -238,7 +254,7 @@
 					<div class="service-fields">
 						<div class="row">
 							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processRequest">Process Request</button>
+								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processRequest">Process Adjustments</button>
 							</div>
 						</div>
 					</div>
@@ -274,10 +290,10 @@
             <input type="hidden" name="difference[]">
 			<p class="difference"></p>
         </td>
-		<td>
+		{{-- <td>
             <input type="hidden" name="category[]">
 			<p class="category"></p>
-        </td>
+        </td> --}}
 		<td>
             <input type="hidden" name="factor[]">
 			<p class="factor"></p>
@@ -310,7 +326,6 @@
 		height: calc(100%);
 		width: calc(100%);
 		border: unset;
-
 	}
 	td input:focus{
 		border: unset;    
@@ -332,6 +347,7 @@
 
 
 @push('page-js')
+
 <!-- Select2 JS -->
 	<script src="{{asset('assets/plugins/select2/js/select2.min.js')}}"></script>
 	<script>
@@ -347,49 +363,143 @@
 				jQuery.noConflict();
 				var tr = $('#tr_clone tr.item-row').clone();
 				var item = $('#itemName').val(),
-					itemQty = $('#itemQty').val(),
-					uom=$('#uom').val();
+					batch = $('#batch').val(),
+					currentStock = $('#currentStock').val(),
+					physicalStock = $('#physicalStock').val(),
+					factor = $('#factor').val(),
+					remarks = $('#remarks').val(),
+					difference = Math.abs((currentStock-physicalStock));
 
 
-				if($('#list').find('tr[data-item="'+item+'"]').length > 0){
-					// ("Product already on the list",'danger')
-					Snackbar.show({
-						text: "Product already on the list",
-						pos: 'top-right',
-						actionTextColor: '#fff',
-						backgroundColor: '#e7515a'
-					});
-					return false;
-				}
-				if(item == '' || itemQty == '' || uom ==''){
-                    Snackbar.show({
-						text: "Please complete the fields first",
-						pos: 'top-right',
-						actionTextColor: '#fff',
-						backgroundColor: '#e7515a'
-					});
-					// alert_toast("Please complete the fields first",'danger')
-					return false;
-				}
+				// if($('#list').find('tr[data-item="'+item+'"]').length > 0){
+				// 	// ("Product already on the list",'danger')
+				// 	Snackbar.show({
+				// 		text: "Product already on the list",
+				// 		pos: 'top-right',
+				// 		actionTextColor: '#fff',
+				// 		backgroundColor: '#e7515a'
+				// 	});
+				// 	return false;
+				// }
+				// if(item == '' || itemQty == '' || uom ==''){
+                //     Snackbar.show({
+				// 		text: "Please complete the fields first",
+				// 		pos: 'top-right',
+				// 		actionTextColor: '#fff',
+				// 		backgroundColor: '#e7515a'
+				// 	});
+				// 	// alert_toast("Please complete the fields first",'danger')
+				// 	return false;
+				// }
 
 				tr.attr('data-item',item)
+				tr.attr('data-batch',batch)
 				tr.find('.item').html($("#itemName option[value='"+item+"']").attr('data-item_name'))
-				tr.find('.unit').html($("#uom option[value='"+uom+"']").attr('data-uom_name'))
-				tr.find('.qty').html(itemQty)
-
-
+				tr.find('.batchNo').html($("#batch option[value='"+batch+"']").attr('data-batchNo'))
+				tr.find('.factor').html($("#factor option[value='"+factor+"']").attr('data-name'))
+				tr.find('.batchQty').html(currentStock)
+				tr.find('.pcount').html(physicalStock)
+				tr.find('.remark').html(remarks)
+				tr.find('.difference').html(difference)
 
 				tr.find('[name="item[]"]').val(item)
-				tr.find('[name="unit[]"]').val(uom)
-				tr.find('[name="qty[]"]').val(itemQty)
+				tr.find('[name="batchNo[]"]').val(batch)
+				tr.find('[name="factor[]"]').val(factor)
+				tr.find('[name="batchQty[]"]').val(currentStock)
+				tr.find('[name="pcount[]"]').val(physicalStock)
+				tr.find('[name="difference[]"]').val(difference)
+				tr.find('[name="remark[]"]').val(remarks)
 
-				
 				$('#list tbody').append(tr)
 		 			$('#itemName').val('').change()
-					$('#itemQty').val('')
-					$('#uom').val('').change()
+					$('#currentStock').val('');
+					$('#physicalStock').val('');
+					$("#batch").empty();
+					$("#factor").empty();
+					$('#remarks').val('');
 			});
 			//
+
+
+			$("#itemName").change(function(){
+				event.preventDefault();
+				jQuery.noConflict();
+				$('#currentStock').val('');
+				$('#physicalStock').val('');
+				$("#factor").empty();
+                var itemId = $(this).val(),
+					_token=$('input[name="_token"]').val();			
+                $.ajax({
+					url:"{{ route('itemBatches') }}",
+                    method:'POST',
+                    data:{
+						itemId:itemId,
+						_token:_token
+					},
+					dataType:'JSON',
+                    success:function(response){
+						// alert_toast(JSON.parse(response))
+						console.log(response);
+                        var len = response.length;
+						$("#batch").empty();
+						$("#batch").append("<option value=''>select Batch / Serial No</option> ");
+                        for( var i = 0; i<len; i++){
+                            var batchId = response[i]['batchId'];
+                            var batchNo = response[i]['batchNo'];
+							var store=response[i]['store'];
+							var avilableQty = response[i]['avilableQty'];
+                            $("#batch").append("<option value='"+batchId+"' data-store='"+store+"' data-batchNo='"+batchNo+"' data-avilableQty='"+avilableQty+"'>"+batchNo+"</option>");
+                        }
+                    }
+                });
+            });
+			$("#batch").change(function(){
+				console.log('maua');
+				event.preventDefault();
+				jQuery.noConflict();
+				var batchId = $("#batch").val();
+				console.log('batchID',batchId);
+				$('#currentStock').val($("#batch option[value='"+batchId+"']").attr('data-avilableQty'));
+				console.log($('#currentStock').val());
+			});
+			$('#physicalStock').keyup(function(){
+				event.preventDefault();
+				jQuery.noConflict();
+				// $("#factor opttion").remove();
+				var physicalStock = $('#physicalStock').val(),
+					currentStock = $('#currentStock').val(),
+					_token=$('input[name="_token"]').val(),
+					factorType;
+					if(currentStock > physicalStock){
+						factorType=2;
+					}
+					if(physicalStock > currentStock){
+						factorType=1;
+					}
+					$.ajax({
+					url:"{{ route('adjustment-factors') }}",
+                    method:'POST',
+                    data:{
+						factorType:factorType,
+						_token:_token
+					},
+					dataType:'JSON',
+                    success:function(response){
+						// alert_toast(JSON.parse(response))
+						console.log(response);
+                        var len = response.length;
+						$("#factor").empty();
+						$("#factor").append("<option value=''>select Factor</option> ");
+                        for( var i = 0; i<len; i++){
+                            var factorId = response[i]['adjustment_factor_id'];
+                            var name = response[i]['name'];
+							var description=response[i]['description'];
+							var uuid = response[i]['uuid'];
+                            $("#factor").append("<option value='"+factorId+"' data-uuid='"+uuid+"' data-description='"+description+"' data-name='"+name+"'>"+name+"</option>");
+                        }
+                    }
+                });
+			});
 		});
 	</script>
 

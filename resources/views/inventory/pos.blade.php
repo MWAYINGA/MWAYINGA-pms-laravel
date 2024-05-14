@@ -13,6 +13,7 @@
 		<li class="breadcrumb-item active">{{$title}}</li>
 	</ul>
 </div>
+{{-- <a href="{{route('sendViaMpesa')}}" class="btn btn-success float-right mt-2">Send Via Mpesa</a> --}}
 <div class="col-sm-5 col">
 	@isset($createNormalSales)
 	<a href="{{route('pos-insurance')}}" class="btn btn-primary float-right mt-2">Insurance</a>
@@ -129,8 +130,8 @@
 					</div>
 					<div class="service-fields">
 						<div class="row">
-							<div class="submit-section">
-								<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit" id="processOrder">SAVE</button>
+							<div class="submit-section col-sm-12 col-auto">
+								<button class="btn btn-primary submit-btn float-right" type="submit" name="form_submit" value="submit" id="processOrder">SAVE</button>
 							</div>
 						</div>
 					</div>

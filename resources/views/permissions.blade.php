@@ -137,6 +137,7 @@
 @push('page-js')
 	<!-- Select2 JS -->
 	<script src="{{asset('assets/plugins/select2/js/select2.min.js')}}"></script>
+	
 	<script>
 		$(document).ready(function() {
 			$('#perm-table').on('click','.editbtn',function (){
